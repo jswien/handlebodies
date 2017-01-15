@@ -1,0 +1,56 @@
+#!/usr/local/bin/wolframscript
+
+(*###################################################################
+#
+# makemesh function makes a mesh bound by a set of circles
+#     usage: makemesh [ag=4, mcm=0.005] {x1,y1} r1 {x2,y2} r2
+#     	     Negative radius means the region lies inside circle.
+#	     Combinations {1,0} 0 means x>0, etc.
+#
+#
+*)###################################################################
+
+(*Load finite element mesh package*)
+Needs["NDSolve`FEM`"];
+
+(*Read input and return 0 if invalid*)
+input = Quiet@ToExpression@$ScriptCommandLine[[2;;]];
+If[Or@@(#===$Failed &/@ input),Print[0];Exit[0]];
+If[Or@@(Not@NumericQ@# &/@ input),Print[0];Exit[0]];
+
+(*Determine cell measure and accuracy goal*)
+Which[
+Divisible[Length@input,3], ag=4; mcm=0.005;,
+Divisible[2-Length@input,3], ag=input[[2]]; mcm=input[[1]];input=input[[3;;]];,
+True, Print[0];Exit[0];
+];
+
+(*Gather list of circles and inequalities*)
+circles = Partition[input,3];
+ineqs = Select[circles, #[[3]]==0&];
+circles = Complement[circles, ineqs];
+
+(*Construct region*)
+region = And@@((If[#[[3]] < 0, LessEqual, GreaterEqual] @@ {(x - #[[1]])^2 + (y - #[[2]])^2, #[[3]]^2}) & /@ circles)&& And@@({x,y,0}.#>=0&/@ineqs);
+
+(*Make Mesh*)
+mesh=ToElementMesh[ImplicitRegion[region,{x,y}], MaxCellMeasure->mcm, AccuracyGoal->ag];
+coors=mesh["Coordinates"];
+
+(*Define functions for manipulating mesh*)
+MeshElements = mesh["Coordinates"][[#]] & /@ mesh["MeshElements"][[1, 1]];
+ElementNodes[e_] := (ElementNodes[e] = mesh["MeshElements"][[1, 1, e]]);
+CircleNodes[c_, r_] := (CircleNodes[c, r] = Cases[DeleteDuplicates@Flatten[mesh["BoundaryElements"][[1, 1]]], _?(Abs[Total[(mesh["Coordinates"][[#]] - c)^2] - r^2] < 10^(-5) &), 1]);
+
+(*Straigten mesh elements on circle*)
+Do[Do[If[Length[ElementNodes[e] \[Intersection] CircleNodes[{circles[[n, 1]], circles[[n, 2]]}, Abs@circles[[n, 3]]]] == 3, 
+   coors = ReplacePart[coors, #[[3]] -> Mean[mesh["Coordinates"][[#[[1 ;; 2]]]]] &@(ElementNodes[e] \[Intersection] CircleNodes[{circles[[n, 1]], circles[[n, 2]]}, Abs@circles[[n, 3]]])]], 
+{e, Length@MeshElements}], 
+{n, Length@circles}];
+
+Print[Flatten@N@Round[coors,10^(-7)]];
+Print["break"];
+Print[Flatten@(mesh["MeshElements"][[1,1]])];
+Print["break"];
+Print[DeleteDuplicates@Flatten[mesh["BoundaryElements"][[1,1]]]];
+
