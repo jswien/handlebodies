@@ -54,5 +54,4 @@ Print["break"];
 Print[Flatten@(mesh["MeshElements"][[1,1]])];
 Print["break"];
 Print[DeleteDuplicates@Flatten[mesh["BoundaryElements"][[1,1]]]];
-Print["break"];
-Print[Flatten@Position[#, 1] & /@ Normal[mesh["VertexElementConnectivity"]]]
+

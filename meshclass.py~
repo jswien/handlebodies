@@ -23,7 +23,6 @@ class Mesh(object):
         self.coors = self._build_coors(makemesh_output)
         self.mesh_elements = self._build_mesh_elements(makemesh_output)
         self.bndy_elements = self._build_bndy_elements(makemesh_output)
-        self.node_connectivity = self._build_connectivity(makemesh_output)
     
     def _call_makemesh(self, *arguments):
         """Run the makemesh script"""
@@ -45,14 +44,11 @@ class Mesh(object):
     def _build_bndy_elements(self, makemesh_output):
         """Read in list of boundary elements"""
         return  np.fromstring(makemesh_output[2][2:-2], dtype=int,sep=",")
-    def _build_connectivity(self, makemesh_output):
-        """Read in the connectivity array"""
-        connection_list =  makemesh_output[3][3:-3].split("}, {")
-        node_connectivity = []
-        for connection in connection_list:
-            node_connectivity = node_connectivity + [[int(n) for n in connection.split(",")]]
-        return node_connectivity
+        
+
+#
 
 
 mesh = Mesh(np.array([[1,0,0],[0,1,0],[0,0,-1]]), np.array([0.005,4]))
+
 
