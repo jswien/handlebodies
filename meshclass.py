@@ -108,13 +108,14 @@ def local_circle_metric(vertices,circle):
 class Mesh(object):
     
     def __init__(self, circles, accuracy=np.array([0.005,4])):
+        
         self.circles = circles
         self.accuracy = accuracy
         
         makemesh_output = self._call_makemesh(
             accuracy,
             self.circles.reshape(self.circles.size))
-        
+
         self.coors = self._build_coors(makemesh_output)
         self.mesh_length = self.coors.size/2
         
@@ -123,12 +124,23 @@ class Mesh(object):
         self.bndy_elements = self._build_bndy_elements(makemesh_output)
         self.neighborhoods = self._build_neighborhoods()
 
+
+        print "Build metrics"
+        print time.ctime()
+
+
         self.psi_metric=self._build_global_metric(local_psi_metric)
         self.Npsi_metric=self._build_global_metric(local_Npsi_metric)
+
+        print "Build circles"
+        print time.ctime()
 
         self.circle_metrics = {}
         for circ in self.circles:
             self.circle_metrics[tuple(circ)] = self._build_global_metric(local_circle_metric,circ)
+
+        print "Finished"
+        print time.ctime()
             
 
 
@@ -142,7 +154,8 @@ class Mesh(object):
 
     def _build_coors(self, makemesh_output):
         """Read in mesh coordinates from makemesh output"""
-        coors = np.fromstring(makemesh_output[0][1:-2], sep=",")
+        coors = np.fromstring(makemesh_output[0][1:-2], sep=", ")
+        print coors.size
         return  coors.reshape((coors.size/2,2))
 
     def _build_elements_to_nodes(self, makemesh_output):
@@ -180,10 +193,11 @@ class Mesh(object):
     
     
     def _build_global_metric(self, metric_function, *args):
-        """Build global metric from local fun*ction"""
+        """Build global metric from local function"""
         metric = np.zeros((self.mesh_length,self.mesh_length))
         for n_i in xrange(self.mesh_length):
             for n_j in self.neighborhoods[n_i]:
+                if n_j> n_i:continue
                 for elem in list(set(self.nodes_to_elements[n_i])&
                                  set(self.nodes_to_elements[n_j])
                                  ):
@@ -194,14 +208,16 @@ class Mesh(object):
                                   in self.elements_to_nodes[elem][:3]
                                  ])]
                         +list(args)))[n_i_pos,n_j_pos]
+                if n_i != n_j: metric[n_j,n_i]=metric[n_i,n_j]
         return metric
 
                                  
+print "Start mesh"
+
 print time.ctime()
 
 mesh = Mesh(np.array([[1,0,0],[0,1,0],[0,0,-1]]), np.array([0.005,4]))
 
-print time.ctime()
-
 print np.ones(mesh.mesh_length).dot(mesh.psi_metric.dot(np.ones(mesh.mesh_length)))-pi/4
+
 

@@ -12,6 +12,7 @@
 
 (*Load finite element mesh package*)
 Needs["NDSolve`FEM`"];
+(*$PrePrint = (AccountingForm[#, NumberSigns -> {"-", ""}] &);*)
 
 (*Read input and return 0 if invalid*)
 input = Quiet@ToExpression@$ScriptCommandLine[[2;;]];
@@ -49,7 +50,8 @@ Do[Do[If[Length[ElementNodes[e] \[Intersection] CircleNodes[{circles[[n, 1]], ci
 {e, Length@MeshElements}], 
 {n, Length@circles}];
 
-Print[Flatten@N@Round[coors,10^(-7)]];
+
+Print[Flatten@N@Round[coors,10^(-5)]];
 Print["break"];
 Print[Flatten@(mesh["MeshElements"][[1,1]])];
 Print["break"];
