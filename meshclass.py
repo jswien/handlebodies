@@ -213,10 +213,11 @@ class Mesh(object):
 
                                  
 print "Start mesh"
+
 print time.ctime()
 
 mesh = Mesh(np.array([[1,0,0],[0,1,0],[0,0,-1]]), np.array([0.005,4]))
 
-
 print np.ones(mesh.mesh_length).dot(mesh.psi_metric.dot(np.ones(mesh.mesh_length)))-pi/4
+
 
