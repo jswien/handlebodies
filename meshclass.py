@@ -73,6 +73,8 @@ def local_Npsi_metric(vertices):
                                ])
 
 def point_on_circ(point,circle): 
+    if len(circle)==0:
+        return True
     if circle[2]>0.5: 
         tol=1e-5 
     else: 
@@ -138,7 +140,7 @@ class Mesh(object):
         self.circle_metrics = {}
         for circ in self.circles:
             self.circle_metrics[tuple(circ)] = self._build_global_metric(local_circle_metric,circ)
-
+            
         print "Finished"
         print time.ctime()
             
@@ -195,7 +197,11 @@ class Mesh(object):
     def _build_global_metric(self, metric_function, *args):
         """Build global metric from local function"""
         metric = np.zeros((self.mesh_length,self.mesh_length))
+        if len(args)>0:circ = args[0]
+        else: circ = []
         for n_i in xrange(self.mesh_length):
+            if not(point_on_circ(self.coors[n_i],circ)):
+                continue
             for n_j in self.neighborhoods[n_i]:
                 if n_j> n_i:continue
                 for elem in list(set(self.nodes_to_elements[n_i])&
