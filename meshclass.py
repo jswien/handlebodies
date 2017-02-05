@@ -8,18 +8,114 @@
 #####################################################################
 
 import subprocess
+import time
 import numpy as np
+
+from numpy import absolute as abs
+from numpy import pi as pi
+from numpy import sqrt as sqrt
+                               
+def local_psi_metric(vertices):
+    jac = abs(vertices[0,0]*(vertices[1,1]-vertices[2,1])
+              +vertices[1,0]*(vertices[2,1]-vertices[0,1])
+              +vertices[2,0]*(vertices[0,1]-vertices[1,1])
+              ) 
+    vv = jac/60
+    vvp = -jac/360
+    vn = -jac/90
+    nn = 4*jac/45
+    nnp = 2*jac/45
+    return np.array([[vv,vvp,vvp,0,vn,0],
+                     [vvp,vv,vvp,0,0,vn],
+                     [vvp,vvp,vv,vn,0,0],
+                     [0,0,vn,nn,nnp,nnp],
+                     [vn,0,0,nnp,nn,nnp],
+                     [0,vn,0,nnp,nnp,nn],
+                     ])
+
+def local_Npsi_metric(vertices):
+    jac = abs(vertices[0,0]*(vertices[1,1]-vertices[2,1])
+              +vertices[1,0]*(vertices[2,1]-vertices[0,1])
+              +vertices[2,0]*(vertices[0,1]-vertices[1,1])
+              )
+    area = 4*((vertices[0,0]-vertices[1,0])**2
+              +(vertices[0,0]-vertices[2,0])**2
+              +(vertices[2,0]-vertices[1,0])**2
+              +(vertices[0,1]-vertices[1,1])**2
+              +(vertices[0,1]-vertices[2,1])**2
+              +(vertices[2,1]-vertices[1,1])**2
+             )
+    c00 = ((vertices[1,0]-vertices[2,0])**2
+           +(vertices[1,1]-vertices[2,1])**2)
+    c11 = ((vertices[0,0]-vertices[2,0])**2
+           +(vertices[0,1]-vertices[2,1])**2)
+    c22 = ((vertices[0,0]-vertices[1,0])**2
+           +(vertices[0,1]-vertices[1,1])**2)
+    c01 = ((vertices[0,0]-vertices[2,0])
+           *(vertices[1,0]-vertices[2,0])
+           +(vertices[0,1]-vertices[2,1])
+           *(vertices[1,1]-vertices[2,1]))
+    c02 = ((vertices[0,0]-vertices[1,0])
+           *(vertices[2,0]-vertices[1,0])
+           +(vertices[0,1]-vertices[1,1])
+           *(vertices[2,1]-vertices[1,1]))
+    c12 = ((vertices[1,0]-vertices[0,0])
+           *(vertices[2,0]-vertices[0,0])
+           +(vertices[1,1]-vertices[0,1])
+           *(vertices[2,1]-vertices[0,1]))
+    
+    return 1/jac*1/6*np.array([[3*c00,c01,c02,-4*c01,0,-4*c02],
+                               [c01,3*c11,c12,-4*c01,-4*c12,0],
+                               [c02,c12,3*c22,0,-4*c12,-4*c02],
+                               [-4*c01,-4*c01,0,area,-8*c02,-8*c12],
+                               [0,-4*c12,-4*c12,-8*c02,area,-8*c01],
+                               [-4*c02,0,-4*c02,-8*c12,-8*c01,area],
+                               ])
+
+def point_on_circ(point,circle): 
+    if circle[2]>0.5: 
+        tol=1e-5 
+    else: 
+        tol=1e-7
+    
+    if circle[2]==0 and circle[0]==1:
+        if abs(point[0])<1e-5: return True
+        else: return False
+    elif circle[2]==0 and circle[1]==1:
+        if abs(point[1])<1e-5: return True
+        else: return False
+    elif abs(np.sum((point-circle[:2])**2)-circle[2]**2)<tol:
+        return True
+    else: 
+        return False
+        
+
+def local_circle_metric(vertices,circle):
+    c01 = sqrt(np.sum((vertices[0]-vertices[1])**2))
+    c02 = sqrt(np.sum((vertices[0]-vertices[2])**2))
+    c12 = sqrt(np.sum((vertices[2]-vertices[1])**2))
+
+    if point_on_circ(vertices[0],circle) and point_on_circ(vertices[1],circle):
+        return c01*np.diag([1/6,1/6,0,2/3,0,0])
+    elif point_on_circ(vertices[0],circle) and point_on_circ(vertices[2],circle):
+        return c02*np.diag([1/6,0,1/6,0,0,2/3])
+    elif point_on_circ(vertices[2],circle) and point_on_circ(vertices[1],circle):
+        return c12*np.diag([0,1/6,1/6,0,2/3,0])
+    else: 
+        return np.zeros((6,6))
+
 
 class Mesh(object):
     
     def __init__(self, circles, accuracy=np.array([0.005,4])):
+        
         self.circles = circles
         self.accuracy = accuracy
         
         makemesh_output = self._call_makemesh(
             accuracy,
             self.circles.reshape(self.circles.size))
-        
+
         self.coors = self._build_coors(makemesh_output)
         self.mesh_length = self.coors.size/2
         
@@ -28,8 +124,26 @@ class Mesh(object):
         self.bndy_elements = self._build_bndy_elements(makemesh_output)
         self.neighborhoods = self._build_neighborhoods()
 
+
+        print "Build metrics"
+        print time.ctime()
+
+
         self.psi_metric=self._build_global_metric(local_psi_metric)
         self.Npsi_metric=self._build_global_metric(local_Npsi_metric)
+
+        print "Build circles"
+        print time.ctime()
+
+        self.circle_metrics = {}
+        for circ in self.circles:
+            self.circle_metrics[tuple(circ)] = self._build_global_metric(local_circle_metric,circ)
+
+        print "Finished"
+        print time.ctime()
+            
+
+
 
     def _call_makemesh(self, *arguments):
         """Run the makemesh script"""
@@ -40,7 +154,8 @@ class Mesh(object):
 
     def _build_coors(self, makemesh_output):
         """Read in mesh coordinates from makemesh output"""
-        coors = np.fromstring(makemesh_output[0][1:-2], sep=",")
+        coors = np.fromstring(makemesh_output[0][1:-2], sep=", ")
+        print coors.size
         return  coors.reshape((coors.size/2,2))
 
     def _build_elements_to_nodes(self, makemesh_output):
@@ -77,82 +192,31 @@ class Mesh(object):
         return neighborhoods
     
     
-    def _build_global_metric(self, metric_function):
+    def _build_global_metric(self, metric_function, *args):
         """Build global metric from local function"""
         metric = np.zeros((self.mesh_length,self.mesh_length))
         for n_i in xrange(self.mesh_length):
             for n_j in self.neighborhoods[n_i]:
+                if n_j> n_i:continue
                 for elem in list(set(self.nodes_to_elements[n_i])&
                                  set(self.nodes_to_elements[n_j])
                                  ):
                     n_i_pos = self.elements_to_nodes[elem].index(n_i)
                     n_j_pos = self.elements_to_nodes[elem].index(n_j)
-                    metric[n_i,n_j]+=metric_function(
-                        np.array([self.coors[node] for node 
+                    metric[n_i,n_j]+=metric_function(*(
+                        [np.array([self.coors[node] for node 
                                   in self.elements_to_nodes[elem][:3]
-                                 ])
-                        )[n_i_pos,n_j_pos]
+                                 ])]
+                        +list(args)))[n_i_pos,n_j_pos]
+                if n_i != n_j: metric[n_j,n_i]=metric[n_i,n_j]
         return metric
-                               
-def local_psi_metric(vertices):
-    jac = np.absolute(vertices[0,0]*(vertices[1,1]-vertices[2,1])
-                      +vertices[1,0]*(vertices[2,1]-vertices[0,1])
-                      +vertices[2,0]*(vertices[0,1]-vertices[1,1])
-                      )
-    vv = jac/60
-    vvp = -jac/360
-    vn = -jac/90
-    nn = 4*jac/45
-    nnp = 2*jac/45
-    return np.array([[vv,vvp,vvp,0,vn,0],
-                     [vvp,vv,vvp,0,0,vn],
-                     [vvp,vvp,vv,vn,0,0],
-                     [0,0,vn,nn,nnp,nnp],
-                     [vn,0,0,nnp,nn,nnp],
-                     [0,vn,0,nnp,nnp,nn],
-                     ])
 
-def local_Npsi_metric(vertices):
-    jac = np.absolute(vertices[0,0]*(vertices[1,1]-vertices[2,1])
-                      +vertices[1,0]*(vertices[2,1]-vertices[0,1])
-                      +vertices[2,0]*(vertices[0,1]-vertices[1,1])
-                      )
-    area = 4*((vertices[0,0]-vertices[1,0])**2
-              +(vertices[0,0]-vertices[2,0])**2
-              +(vertices[2,0]-vertices[1,0])**2
-              +(vertices[0,1]-vertices[1,1])**2
-              +(vertices[0,1]-vertices[2,1])**2
-              +(vertices[2,1]-vertices[1,1])**2
-             )
-    c00 = ((vertices[1,0]-vertices[2,0])**2
-           +(vertices[1,1]-vertices[2,1])**2)
-    c11 = ((vertices[0,0]-vertices[2,0])**2
-           +(vertices[0,1]-vertices[2,1])**2)
-    c22 = ((vertices[0,0]-vertices[1,0])**2
-           +(vertices[0,1]-vertices[1,1])**2)
-    c01 = ((vertices[0,0]-vertices[2,0])
-           *(vertices[1,0]-vertices[2,0])
-           +(vertices[0,1]-vertices[2,1])
-           *(vertices[1,1]-vertices[2,1]))
-    c02 = ((vertices[0,0]-vertices[1,0])
-           *(vertices[2,0]-vertices[1,0])
-           +(vertices[0,1]-vertices[1,1])
-           *(vertices[2,1]-vertices[1,1]))
-    c12 = ((vertices[1,0]-vertices[0,0])
-           *(vertices[2,0]-vertices[0,0])
-           +(vertices[1,1]-vertices[0,1])
-           *(vertices[2,1]-vertices[0,1]))
-    
-    return 1/jac*1/6*np.array([[3*c00,c01,c02,-4*c01,0,-4*c02],
-                               [c01,3*c11,c12,-4*c01,-4*c12,0],
-                               [c02,c12,3*c22,0,-4*c12,-4*c02],
-                               [-4*c01,-4*c01,0,area,-8*c02,-8*c12],
-                               [0,-4*c12,-4*c12,-8*c02,area,-8*c01],
-                               [-4*c02,0,-4*c02,-8*c12,-8*c01,area],
-                               ])
+                                 
+print "Start mesh"
+print time.ctime()
 
 mesh = Mesh(np.array([[1,0,0],[0,1,0],[0,0,-1]]), np.array([0.005,4]))
 
-print np.ones(mesh.mesh_length).dot(mesh.psi_metric.dot(np.ones(mesh.mesh_length)))-np.pi/4
 
-print np.ones(mesh.mesh_length).dot(mesh.Npsi_metric.dot(np.ones(mesh.mesh_length)))
+print np.ones(mesh.mesh_length).dot(mesh.psi_metric.dot(np.ones(mesh.mesh_length)))-pi/4
+
