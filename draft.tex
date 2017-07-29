@@ -1,0 +1,746 @@
+\documentclass[letterpaper,12pt]{article}
+\pdfoutput=1
+
+\usepackage{jheppub}
+\usepackage{amsmath,mathtools}
+\usepackage{graphicx}
+\usepackage{cancel}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{color}
+\usepackage{mathrsfs}
+\usepackage{amsfonts}
+%\usepackage{dsfont}
+
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{afterpage}
+\captionsetup{font={sf,footnotesize},labelfont=footnotesize}
+\captionsetup[sub]{font={sf,footnotesize},labelfont=footnotesize}
+
+
+\allowdisplaybreaks
+
+\pdfminorversion=6
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% useful macros %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\({\left(}
+\def\){\right)}
+\def\[{\left[}
+\def\]{\right]}
+
+\newcommand{\reef}[1]{(\ref{#1})}
+\newcommand{\comment}[1]{{\bf [[[#1]]]}}
+\newcommand{\ssc}{\scriptscriptstyle}
+\newcommand{\mt}[1]{\textrm{\tiny #1}}
+
+\newcommand{\eg}{{\it e.g.,}\ }
+\newcommand{\ie}{{i.e.}\ }
+\newcommand{\etal}{{\it et. al.}\ }
+\def\DM#1{{\color{red}{ [#1]}}}
+\def\JW#1{{\color{LimeGreen}{ [#1]}}}
+\def\MR#1{{\color{violet}{ [#1]}}}
+
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\tr}{\text{tr }}
+
+
+%Some of Jason's favorite (non-conflicting) macros
+\newcommand{\pd}[2]{\frac{\partial#1}{\partial#2}}
+\newcommand{\deriv}[2]{\frac{d#1}{d#2}}
+\newcommand{\baa}[1]{\begin{align*}#1\end{align*}}
+\newcommand{\ban}[1]{\begin{align}#1\end{align}}
+\newcommand{\sech}{\text{sech\hspace{0.07cm}}}
+\newcommand{\csch}{\text{csch\hspace{0.07cm}}}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand{\gp}[1]{{g^{(2)}_{#1}}}
+\newcommand{\mathbreak}{\notag\\}
+\newcommand{\Q}[1]{{\bf \color{LimeGreen} $\square$  #1 $\square$}}
+\newcommand{\corr}[1]{\left< #1\right>}
+\newcommand{\Tr}{\text{Tr}}
+\newcommand{\ket}[1]{\left| #1\right>}
+\newcommand{\bra}[1]{\left< #1\right|}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\arxivnumber{1605.02804}
+
+\title{The Torus Operator and Holography}
+
+\author{Donald Marolf and Jason Wien}
+
+\affiliation{Department of Physics, University of California, Santa Barbara, CA 93106, USA}
+
+\emailAdd{marolf@physics.ucsb.edu}
+\emailAdd{jswien@physics.ucsb.edu}
+
+\abstract{
+We consider the non-local operator  ${\mathcal T}$ defined in 2-dimensional CFTs by the path integral over a torus with two punctures. Using the AdS/CFT correspondence, we study the spectrum and ground state of this operator in holographic such CFTs. In one region of moduli space, we argue that the operator has a finite gap and a ground state that differs from the CFT vacuum only by order one corrections in the limit of large central charge $c$. In this region the torus operator is much like the cylinder operator. However in another region of moduli space we find a puzzle.  Although our ${\mathcal T}$ is of the manifestly positive form $A^\dagger A$, studying the most tractable phases of $\Tr(\mathcal T^n)$ suggests that ${\mathcal T}$ has negative eigenvalues.  Furthermore, relevant new phases would seem to either i) have an unexpected symmetry that equate their actions those of seemingly unrelated phases or ii) dominate even when they force surprisingly long cycles on the boundary to be contractible in the bulk.  In the former case the ground state of $K = - \ln {\mathcal T}$ has an order $1$ gap at large $c$ and the ground state is a superposition of two bulk topologies, while in the latter $K$ has only an exponentially small gap and the ground state has definite topology in the bulk.  We also study the action of two such torus operators on the CFT ground state.
+}
+
+
+\makeatletter
+\def\@fpheader{\relax}
+\makeatother
+
+\begin{document}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+\label{section:intro}
+
+The AdS/CFT correspondence \cite{maldholo, wittenholo} provides a powerful set of tools for studying features of conformal field theories (CFTs) as well as for exploring models of quantum gravity. In particular, many difficult computations in CFTs can be mapped to simpler computations in Einstein gravity, with a notable example being the Ryu-Takayanagi prescription for computing holographic entanglement entropy \cite{rt1, rt2}. A key ingredient in these computations is the conjectured equality between the Euclidean partition functions \cite{GKP},
+\ban{
+\mathcal Z_\text{CFT} = \mathcal Z_\text{grav.}\, ,
+}
+where $\mathcal Z_\text{grav.} = \int \mathcal D g\, e^{-S_{EH}[g]}$ and $S_{EH}$ is the Einstein-Hilbert action with Newton constant $G_N$ and negative cosmological constant.\footnote{For exact equality, $\mathcal Z_\text{grav.}$ should be the full quantum gravity partition function including other fields, strings, higher derivative corrections, etc. But we restrict attention below to the so-called universal sector in which the bulk is described by $S_{EH}[g]$.} For the 2d CFTs on which we will focus, taking the limit of large central charge $c$ corresponds to taking $G_N \to 0$ with fixed AdS scale $\ell$. In this limit we may evaluate the gravitational partition function using the saddle point approximation.
+
+As an application of this correspondence, we may study CFT states defined via a path integral over a 2d surface ${Y}$ (with boundary $\partial {Y}$) by computing the gravitational action for Euclidean solutions $M$ of Einstein's equations with boundary $\partial M ={Y} \cup \Sigma $. Here ${Y}$ is the asymptotically locally AdS boundary, while $\Sigma$ lies at finite distance from the bulk. Note that since $\partial \partial M = \emptyset$, $\partial \Sigma = \partial {Y}$. The path integral computes a CFT state $\ket {Y}$ in the sense that it gives the amplitude $\corr{\phi|{Y}}$ for any CFT field configuration $\phi$ on $\partial {Y}$. Similarly, the dual bulk state $\ket {Y}_\text{bulk}$ has amplitude $\corr{\Phi|{Y}}_\text{bulk}$ given by the bulk path integral with boundary conditions $\Phi$ on $\Sigma$.
+
+The semi-classical description of $\ket {Y}_\text{bulk}$ is given by the geometry that dominates the associated path integral that computes the norm $\corr{{Y}|{Y}} = {}_\text{bulk}\corr{{Y}|{Y}}_\text{bulk}$ of this state; i.e. the path integral over the 2d manifold $X=2Y$ defined by gluing together two copies of ${Y}$ along $\partial {Y}$. Note that by construction $X$ has no boundary and, since we choose to study Euclidean (real) path integrals, $X$ has an explicit $\mathbb Z_2$ symmetry that exchanges the two copies of ${Y}$.  In other words, we study states at a moment of time-symmetry defined by cutting the path integral along the surface $\partial {Y}$ fixed by some reflection symmetry of the boundary geometry $X$. The bulk surface $\Sigma$ fixed by this reflection symmetry may be thought of as providing initial data for the Lorentzian signature bulk solution dual to $\ket Y$ at large $c$.
+
+In a similar way, we can study operators defined via path integrals over surfaces, for example by considering their action on states or by computing quantities like $\Tr (\mathcal O^n)$. In this paper we study a class of operators $\mathcal T$ in 2d CFTs which we call ``torus operators,'' defined by path integrals over a torus with two punctures as drawn in figure \ref{fig:operator}.
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=0.5\textwidth]{torus.png}
+\caption{
+The torus operator $\mathcal T$ with three reflection symmetries across the vertical axis, horizontal axis and the plane of the page. \label{fig:operator}.  Cutting the path integral along the vertical axis (dashed line) decomposes $\mathcal T$ into the product $A^\dagger A$ where$ A$ maps our CFT Hilbert space ${\cal H}$ to   ${\cal H} \otimes  {\cal H}$. \DM{Add dashed vertical line.}
+}
+\end{figure}
+For simplicity we impose three reflection symmetries on the surface used to define $\mathcal T$, which reduces the moduli space of twice-punctured tori to two dimensions and implies that $\mathcal T = A^\dagger A$ for an operator $A$ defined by a path integral over a pair of pants and which maps our CFT Hilbert space ${\cal H}$ to   ${\cal H} \otimes  {\cal H}$; see figure \ref{fig:operator}.  In particular, our $\mathcal T$ are manifestly non-negative.
+
+The action of $\mathcal T$ on the vacuum caps off one puncture to give a path integral over a singly-punctured torus.  As discussed in detail in \cite{Maxfield3D}, for appropriate moduli this defines a state whose bulk dual is a black hole with a single asymptotic region and a torus behind the horizon (say, on the $t=0$ slice).  \DM{Can you add a figure showing the $t=0$ surface?} One might thus expect that, at least for carefully tuned choices of moduli,  acting further with $\mathcal T^{n-1}$ would create states whose gravitational duals have single-sized black holes with genus $n$ surfaces behind the horizon.   On the other hand, following this logic, when $\log n$ is of order $c$ some tension will arise with the black hole entropy formula, as the number of black hole states with given horizon size has entropy only of order $c$.\footnote{See \cite{Maloney, Kim} for further discussion of these states and the black hole entropy formula.} It is thus interesting to understand in more detail the properties of $\mathcal T$ that become important at large $n$.  For convenience we will consider the spectrum of $K \equiv - \log \mathcal T$, so that the largest eigenvalue of $\mathcal T$ corresponds to the ground state of $K$. We call this state $\ket 0_K$ and often refer to it simply as the torus operator ground state.  It will also be useful to refer to eigenvlues of $K$ as ``$K$-energies."
+
+We focus on two questions. First, does the spectrum of $K$ have a finite gap as $c\to infty$, or does this limit yield a black hole-like density of low eigenvalue states? We will refer to the latter option as a ``continuum,'' in which case $\mathcal T$ is ``gapless." 
+
+If instead $K$ has a gap of size $\Delta$, then $\mathcal T^n$ will approximately project onto the ground state $\ket 0_K$ for large $n$, so that $\mathcal T^n\ket \psi \propto \ket 0_K + \mathcal O(e^{-n\Delta})$, where $\mathcal T \ket 0_K = e^{-\lambda_0} \ket 0_K$ and $\lambda_0$ is the smallest eigenvalue of $K$. Similarly, we would have
+\ban{
+\corr {\psi| \mathcal T^{n+m} |\psi} \sim e^{-\lambda_0 (n+m)} \, ,
+}
+for large $n$ and $m$. Defining $\ket{\psi,n} \coloneqq \mathcal T^n \ket \psi$, the normalized inner product
+\ban{
+	\frac{\corr{\psi,m|\psi,n}}{\sqrt{\corr{\psi,m|\psi,m}\corr{\psi,n|\psi,n}}} \label{eq:innerprod}
+	}
+would then become exactly one in the limit $c\to\infty$. Additionally in this regime we can write
+\ban{
+\label{eq:corr}
+\Tr(\mathcal T^n) = e^{-\lambda_0 n}\left(1+\mathcal O(e^{-\Delta n})\right)\, .	
+}
+In the dual gravitational theory we can compute via the saddle point approximation using the dominant saddle ($\text{dom}$):
+\ban{
+-\log \Tr(\mathcal T^n)=S_\text{EH}[g_\text{dom.}]\, .
+}
+Since exponential corrections as in \eqref{eq:corr} correspond to $\mathcal O(c^0)$ effects in the bulk (for $\Delta = O(c^0)$ or sub-dominant bulk solutions (for $\Delta = O(c)$), the gravitational action of the dominant solution should be precisely linear for large $n$.
+
+On the other hand if there is a near-continuum of low energy states, then to evaluate the inner product \eqref{eq:innerprod} we need to sum over all the states in the associated band. Assuming a density of states that is black hole-like would yield an inner product of the form
+\ban{
+\label{eq:nmIP}
+\corr {\psi| \mathcal T^{n+m} |\psi} &= \sum_{k=0}^\infty e^{-( \lambda_0 + g(k)e^{-c\, \hat s} )(n+m)} |\corr{\psi|\lambda}|^2\, ,
+}
+where we have taken the spectrum of excitations above the ground state $k=0$ to be $g(k) e^{-c\, \hat s}$; i.e. to leading order the density of states is $s= c \, \hat s$ with further $\mathcal O(1)$ details determined by $g(k)$.   From \eqref{eq:nmIP} one finds that the normalized inner product becomes of order one only when $\log(n+m)$ is of order $c$, consistent with a black hole-like density of states.  
+
+To understand the implications for a bulk dual, recall that in a theory with $c$ degrees of freedom it is natural to expect the number of states at each $k$ to scale like the volume $k^{c-1}$ of a $(k-1)-$sphere so that $g(k)\sim k^{1/c}$ at large $c$, or more generally that $g(k)\sim k^{1/(\alpha c)}$ for some $\alpha$ of order $1$. For small $(n+m)e^{-c \,\hat s}$ we can then approximate the sum in \eqref{eq:nmIP} by an integral to find
+\ban{
+-\log {\corr {\psi| \mathcal T^{n+m} |\psi} }\sim    \lambda_0(n+m) + c \log(n+m) + \mathcal O(1) \cdots  \, .
+}
+So in this case we expect the gravitational action of the dominant bulk saddle to  be only approximately linear in $(n+m)$ at large $c$.
+
+We will also be interested below in the topology of bulk solution dual to the torus-operator ground state $\ket 0_K$. For the cylinder operator the analogous ground state is the CFT vacuum so that the bulk dual is empty AdS.  But a priori for the torus operator $\ket 0_K$ could have bulk genus of order $c$, or even be non-geometric.   Studying the most tractable phases of $\Tr(\mathcal T^n)$ and the action of $\mathcal T$ on various states below will lead to a puzzle, but one potential resolution is that $\mathcal T$ is gapped but $\ket 0_K$ is a superposition of states with different topologies, each with genus of order $1$ at large $c$; i.e, that we have
+\ban{
+\ket 0_K = \sum_{n=0}^{n_\text{max}} a_n \ket {n}_\text{BH}\, ,\label{eq:gs}
+}
+where $\ket{n}_\text{BH}$ is an asymptotically AdS black hole with $n$ handles in the interior, with $n=0$ corresponding to no black hole, i.e. $\ket{\text{AdS}}$, and the values of $a_n$ and $n_\text{max}$ depend on the moduli of $\mathcal T$. Another potential resolution would render $\mathcal T$ gapless but with a ground state of definite topology.
+
+To investigate these issues we further develop the techniques outlined in \cite{Krasnov1, Krasnov2, MRW} with a focus on bulk handlebody phases of partition functions for Riemann surfaces of genus four and higher. In \S\ref{section:handlebody} we review the construction of these bulk phases and the computation of the associated bulk actions. We also provide a heuristic for understanding which phase dominates a given path integral. In \S \ref{section:replica} we study $\Tr(\mathcal T^n)$ and find a puzzle:  although $\mathcal T = A^\dagger A$ is manifestly non-negative, the most tractable phases suggest $\mathcal T$ to have negative eigenvalues.   In \S \ref{section:states} we then consider the action of $\mathcal T$ on the CFT vacuum $\ket 0$ and toroidal black hole states.  We close with some discussion in \S\ref{section:discuss}, including
+a clean statement of the puzzle and two possible resolutions. Estimations of numerical error are relegated to appendix \ref{appendix:error}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Handlebody Phases}
+\label{section:handlebody}
+
+Since our path integrals have no sources for any bulk fields other than the metric, it is reasonable to expect the dominant bulk solutions to belong to the so-called universal sector described by the 2+1 Einstein-Hilbert action with negative cosmological constant.\footnote{As discussed in \cite{Seiberg:1999xz}, for known holographic dualities involving AdS$_3$, instabilities involving ``long strings" often imply that the dominant bulk solution does not in fact lie in the universal sector.  But at least when large black holes are present, we may expect the associated temperature to remove such instabilities in much the same way as the mass deformations described in \cite{MaldMaoz}.  We therefore ignore such instabilities at least until section \ref{section:discuss}.} All solutions of this theory are quotients of AdS$_3$, including solutions with non-trivial topology and multiple boundary regions. An interesting class of solutions are the so-called handlebody solutions, described by choosing an appropriate set of cycles on the Euclidean boundary to be contractible in the bulk. As above, we consider boundary conditions in Euclidean signature given by a compact Riemann surface $X$, with at least one reflection symmetry, which we will call time-reflection. The bulk surface $\Sigma$ invariant under this reflection will be called the $t=0$ surface. We leave implicit any analytic continuation to Lorentzian signature.
+
+For a given boundary Riemann surface $X$ of genus $g$, we can choose a basis $\{\alpha_i, \beta_j\}$ of cycles\footnote{Throughout this paper we use the term ``cycle'' to mean not only an element of $\pi_1(X)$ but in fact a particular curve in $X$ belonging to the associated equivalence class.} for the homotopy group $\pi_1(X)$, such that $\alpha_i \cap \beta_j = \delta_{ij}$ and
+\ban{
+\prod_{i=1}^g \alpha_i^{-1} \beta_i^{-1} \alpha_i \beta_i = 1 \, .
+}
+Given a such basis, we can define a bulk manifold with boundary $X$ by declaring the cycles $\{\alpha_i\}$ to be contractible in the bulk while the cycles $\{\beta_i\}$ remain non-contractible. To be explicit, we note that the subgroup $\Gamma$ of $\pi_1(X)$ generated by the $\alpha_i$ is normal\footnote{See \cite{Ford,TZ} for a proof of this statement and further discussion of Schottky groups.} and define the bulk to have homotopy group $\pi_1(M) \coloneqq \pi_1(X)/\Gamma$.
+It is known that all such $\pi_1(M)$ can be embedded in the group of AdS${}_3$ isometries so that we may construct $M$ as the quotient $\text{AdS}_3/\pi_1(M)$.
+
+In this way, each possible basis for the boundary Riemann surface $X$ defines a handlebody geometry with boundary $X$, and we refer to these bulk solutions as the set of handlebody phases. While they are not the only solutions for a particular set of boundary conditions, it has been conjectured that the non-handlebody solutions are always sub-dominant \cite{Yin}, and indeed certain non-handlebody solutions are known to be forbidden by AdS/CFT \cite{MaldMaoz}.
+
+We wish to compute the Euclidean gravitational path integral using a saddle point approximation, so for each boundary $X$ we need to find the bulk phase with least action. It is often assumed that phases which break the symmetry of the boundary are sub-dominant to the ones which preserve the symmetry, and for simplicity we will focus on bulk manifolds with fundamental groups $\pi_1(M)$ which preserve the symmetries of $\pi_1(X)$.  We will use a normalization in which the action for certain non-handlebody solutions vanishes, and we will see explicitly that the dominant action is always negative for the subspace of moduli space considered.
+
+We can generate a large class of phases by the following algorithm. For simplicity we work with the homology group, and therefore we might miss phases with the same bulk homology but different bulk homotopy. However, we do not expect this restriction to affect our main results. First, we embed $X$ into $\mathbb R^3$ and choose a standard basis in which the $\alpha$ cycles go around the ``handles'' and the $\beta$ cycles go around the ``holes'' as shown in Figure \ref{fig:naive}.
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=0.5\textwidth]{naive.png}
+\caption{
+The naive handlebody phase for a genus 4 boundary with the $\alpha$ cycles drawn in purple. The four $\beta$ cycles are not drawn but each circle one of the four holes. \label{fig:naive}
+}
+\end{figure}
+This phase is referred to as the ``naive handlebody,'' as it corresponds to filling in the bulk manifold with a solid handlebody as suggested by the picture. We then construct new phases by considering the image of these cycles under an arbitrary element $M$ of the mapping class group and choosing the cycles $M(\{\alpha\})$ to be contractible in the bulk. This procedure can generate phases that break symmetries of $X$, so we restrict this algorithm to only select phases that preserve such symmetries.
+
+Some of the resulting phases were originally described in \cite{Brill1,Brill2}. A more systematic treatment in terms of Schottky uniformization and a recipe for computing their actions were then derived in \cite{Krasnov1, Krasnov2}. Numerical techniques for evaluating these actions and matching moduli between phases were later  introduced in \cite{MRW}. The remainder of this section reviews these techniques for use in \S\ref{section:replica} and \S\ref{section:states}.
+
+\subsection{Schottky Uniformization}
+
+All solutions of Einstein's equation in 2+1 dimensions with negative cosmological constant can be constructed by taking a quotient of Euclidean AdS$_3$ by some subset of the symmetry group PSL$(2,\mathbb C)$. In the half-space representation of Euclidean AdS$_3$, the quotient operations act to identify pairs of hemispheres anchored to the boundary. If we think of the boundary as the complex plane $\mathbb C$, then on the boundary the identifications are given by M\"obius transformations which identify pairs of circles. We can thus specify a particular bulk quotient by describing these pairs of boundary circles, with the quotient extending into the bulk by acting on hemispheres anchored to each such boundary circle. Any connected part of the bulk region that remains after these hemispheres are removed can serve as a fundamental domain for the quotient handlebody.
+
+Representing a Riemann surface in terms of pairs of circles identified on $\mathbb C$ is known as a Schottky uniformization. In general, this uniformization is not unique. More explicitly, we think of $\mathbb C \cup \{\infty \}$ as the Riemann sphere and 
+consider the domain defined by removing $2g$ non-intersecting closed disks.  The boundaries of these disks are $2g$ circles, which we group into $g$ pairs $(C_i,C_i')$. Further let the M\"obius transformation $L_i$ map the interior of $C_i$ (defined by the embedding in $\mathbb C$) to the exterior of $C_i'$. 
+
+As defined, each $L_i$ is a loxodromic transformation, meaning that it is conjugate to the transformation $w\mapsto q_i^2 w$ for some $q_i \in \mathbb C$ with $0<|q_i|<1$. Taking the quotient by the group generated by $\{L_i\}$ defines a Riemann surface of genus $g$ with a fundamental domain $D$ given by the region exterior to all of the circles. Each transformation $L_i$ is associated with three complex free parameters, while we are free to choose overall normalizations which fix three of these $3g$ parameters. The space of surfaces described in this manner is thus $\mathbb C^{3g-3}$, which matches the moduli space of a genus $g$ Riemann surface. In fact, the Koebe retrosection theorem \cite{koebe} tells us that all compact Riemann surfaces can be described in this way.
+
+To connect the Schottky uniformization of the boundary Riemann surface and the bulk handlebody phase, note that the circles $C_i$ on the boundary are contractible in the bulk since each $C_i$ can be shrunk to a point by contracting the cycle along the corresponding bulk hemisphere.  As a result, to construct a bulk in which $\{\alpha_i\}$ are contractible, we need only find a Schottky uniformization with $C_i = \alpha_i$.
+
+The cycles $\beta_i$ that are dual to $\alpha_i$ remain non-contractible, as these are the cycles that run from $C_i$ to $C_i'$ on the boundary. Each such cycle is associated with the transformation $L_i$, and any non-contractible bulk cycle given by a product of $\beta_i$ can be associated with some $L$ which is correspondingly product of the $L_i$. Additionally, for any non-contractible cycle there is a unique geodesic representative of the associated homotopy class. Since all loxodromic $L$ have $\Tr\, L >2$,  as shown in \cite{Maxfield3D} the length of this geodesic is
+\ban{
+\ell(L) = 2 \cosh^{-1} \frac{\Tr \,L}{2} \, \label{eq:geodL}.
+}
+This technology provides a useful way to understand the bulk topology and compute the lengths of various horizons and geodesics.
+
+
+Given a Schottky representation of a boundary Riemann surface, the topology of the ``$t=0$'' bulk slice can be determined as follows. Suppose $n$ of the $g$ pairs of circles $\{C_i,C_i'\}$ lie on the boundary $t=0$ slice.\footnote{Since the bulk $t=0$ surface is invariant under a reflection symmetry of the boundary, if $C_i$ lies on the boundary slice then so must $C_i'$.} Additionally, suppose these identifications create $b$ disjoint boundary circles at $t=0$. The number of holes in the bulk $t=0$ slice is then given by
+\ban{
+g_{t=0} =\frac{ n-b+1}2\, \label{eq:bulkgenus}.
+}
+This formula follows from an analog of the ``doubling'' construction $X = 2Y$ as pointed out in \cite{Krasnov2}, using only the subset of identifications that act on the $t=0$ slice. As the boundary identifications are extended into the bulk along hemispheres, the quotient of the bulk $t=0$ slice is determined precisely by the identifications which act on the intersection of this slice with the boundary.
+
+To construct a Schottky domain for a particular bulk handlebody, however, it is more convenient to reverse this procedure. Given a handlebody phase described by cycles $\{\alpha_i\}$ on $X$ to be made contractible in the bulk, we can construct a Schottky uniformization as follows. First, for each $i$ cut along the geodesics homologous to $\alpha_i$, calling each side of the cut $C_i$ and $C_i'$. Cutting the Riemann surface in this manner defines a sphere with $2g$ punctures. Next, project this punctured sphere into the plane $\mathbb C$. The resulting circles and maps $L_i$ identifying $C_i$ and $C_i'$ are precisely the ingredients needed for Schottky uniformization. In \S \ref{section:replica} and \S\ref{section:states} we provide some explicit examples; further examples can be found in \cite{MRW}.
+
+
+Finally, in comparing different handlebody phases with the same boundary conditions we must be sure that the moduli of the two boundary Riemann surfaces agree. Determining the moduli of a Riemann surface from its Schottky representation requires defining a boundary conformal frame in which to compute cycle lengths. While some of the moduli are fixed by symmetry, others must be fixed by computing the lengths of certain cycles. In practice this moduli matching problem is the most difficult part of constructing a phase diagram for higher genus partition functions. However, there is a useful heuristic which can sometimes be used as a shortcut.
+
+From the numerical results of \cite{MRW, cones} and results presented in \S \ref{section:replica} and \S\ref{section:states}, we observe that the action tends to be a monotonic function of the sum of the lengths of boundary cycles chosen to be contractible. When this sum is large the action tends to be more positive, and when this sum is small the action tends to be more negative. We therefore posit the heuristic that for a particular Riemann surface $X$, the phase which dominates the partition function is the one in which the sum of contractible cycle lengths is minimized, or simply ``small boundary cycles like to pinch off.'' We will use this heuristic to try to gain some intuition for the results in \S \ref{section:replica} and \S\ref{section:states}.
+
+One caveat in applying this heuristic is that for a given bulk phase there may be multiple choices of contractible boundary cycles one can use to define it, and so in applying the heuristic one needs to consider the choice with minimal total length. While this heuristic is known not to be exact (for example it fails near the AdS-torus phase boundary in \cite{MRW}), it is still useful for building intuition about which phase dominates a given partition function. Moreover, in many cases there is a symmetry relating two bulk phases at a particular point in moduli space; see e.g. the example in appendix A.3 of \cite{MBW1}. At the symmetry point there is a choice of basis in which the action and the total length of contractible cycles are equal in each phase. Moving away from this point as the total length of contractible cycles decreases, the action typically becomes more negative, and if for the dual phase the total length of contractible cycles increases then the heuristic is exact.
+
+
+\subsection{The Boundary Metric and Bulk Action}
+
+Ultimately we will be interested in comparing the actions of different handlebody phases in order to determine the dominant semi-classical bulk geometry. We must therefore regulate the action by choosing a particular conformal frame. We do so by choosing the boundary to have constant Ricci scalar $R_\text{bndy} = -2$ in AdS units.
+
+Using coordinates $w= x + i y$, we can write the boundary metric as
+\ban{
+ds^2_\text{bndy} = e^{2\phi} |dw|^2\, ,
+}
+where regularity of the metric under the quotient by $L_i$ requires
+\ban{
+\phi(L_i(w)) = \phi(w) -\frac 12 \log \left| L'_i(w)\right|^2 \label{eq:bcs} \, .
+}
+The requirement $R_\text{bndy}=-2$ is equivalent to choosing $\phi$ to satisfy the Liouville equation
+\ban{
+\nabla^2 \phi = 4 \partial_w \partial_{\bar w}\phi = (\partial_x^2 + \partial_y^2) \phi = e^{2\phi} \label{eq:fieldeqn}\, ,
+}
+subject to the boundary conditions \eqref{eq:bcs}. In this way, the problem of finding the boundary conformal frame is reduced to solving the scalar field equation \eqref{eq:fieldeqn} on the Schottky domain $D$ with boundary conditions \eqref{eq:bcs}. We will do so in \S\ref{section:replica} and \S\ref{section:states} using the numerical methods described in \cite{MRW} and reviewed in the next subsection.
+
+As shown in \cite{Krasnov1}, with this choice of conformal frame the evaluation of the Einstein-Hilbert action for a particular solution can be written in terms of the Takhtajan-Zograf action \cite{TZ} for the scalar field $\phi$:
+\ban{
+I = - \frac c{24\pi} \left[ I_\text{TZ}[\phi] - A - 4 \pi (g-1)(1-\log 4 R_0^2)\right]\, ,
+}
+where $A$ is the area of the boundary and $R_0$ is the radius of the sphere for which the partition function is one. We will set $R_0=1$ in the results section. As explained in \cite{MRW}, if we define $R_k$ to be the radius of $C_k$ and $\Delta_k$ as the distance between the center of $C_k$ and the point $w_\infty^{(k)}$ mapped to $\infty$ by $L_k$, this action reduces to
+\ban{
+I_{TZ}[\phi] = \int_D d^2 w\left( \left(\nabla \phi\right)^2 + e^{2\phi} \right) + \sum_k \left(\int_{C_k} 4 \phi\, d\theta_\infty^{(k)}  - 4 \pi \log \left |R_k^2 - \Delta_k^2 \right|\right)\,,
+}
+where $\theta_\infty^{(k)}$ is the angle measured from the point $w_{\infty}^{(k)}$.  If we can further reduce $D$ by some set of symmetries, this action can take an even simpler form as shown in \cite{MRW,cones}. As in \cite{cones}, we introduce Jacobian factors to turn all of the integrals over $\theta^{(k)}_\infty$ into numeric integrals over $\theta^{(k)}_0$, i.e. about the center of each circle.
+
+\subsection{Numerical Methods}
+\label{sec:methods}
+Equation \eqref{eq:fieldeqn} on the Schottky domain $D$ with boundary conditions \eqref{eq:bcs} is generally difficult to solve analytically. Following \cite{MRW}, we thus proceed numerically using finite element methods and the Newton-Raphson algorithm. See \cite{FEMgentle,FEMlecture} for introductions to finite element methods.
+
+In all cases of interest, we may write the boundary of our domain as $\partial D = \bigcup_i \partial D_i$ where $\partial D_i$ is an arc\footnote{Straight line segments are ``arcs'' of infinite-radius circles.} of a circle with radius $R_i$, where each $\partial D_i$ is the fixed point set of some involution or reflection symmetry of $D$. As shown in appendix A of \cite{MRW}, we can then use the boundary conditions \eqref{eq:bcs} to find
+\ban{
+\left.\nabla_n \phi \right|_{\partial D_i } = - \frac 1 {R_i} \, \label{eq:bcred}.
+}
+
+To solve \eqref{eq:fieldeqn} using the Newton-Raphson algorithm, we first write $\phi = \phi_{(n)} + \delta \phi_{(n)}$ and solve a linearized equation for $\delta\phi_{(n)}$. We then set $\phi_{(n+1)} = \phi_{(n)}+ \delta\phi_{(n)}$ and similarly solve a linearized equation for $\delta\phi_{(n+1)}$. We repeat this process until $||\delta\phi_{(n+1)}||_\infty < 10^{-10}$.
+
+At stage $n$ in the Newton-Raphson algorithm, we can integrate the linearized equation against a test function $\psi$, and integrating by parts to incorporate the reduced boundary conditions \eqref{eq:bcred} we have the following equation for $\delta \phi_{(n)}$:
+\ban{
+- \int_D \nabla \psi\cdot \nabla \delta \phi_{(n)}- 2 \int_D \psi \, e^{2\phi_{(n)}} \, \delta\phi_{(n)} = \int_D \nabla \psi \cdot \nabla \phi_{(n)} + \int_D \psi \, e^{2\phi_{(n)}} + \sum_{i}\frac {\sigma_i}{R_i} \int_{\partial D_i} {\psi}\, d \theta_i \, ,
+}
+where $\sigma_i = \pm 1$ when the orientation of $\partial D_i$ as part of $\partial D$ is counter-clockwise or clockwise respectively. With an initial seed of $\phi_{(0)}=0$, we can now use this equation and standard finite element techniques to solve for $\phi$.
+
+To match moduli between different phases, we need to compute the lengths of various geodesics on the boundary. In the case where a geodesic is fixed by a symmetry of the domain $D$, we can explicitly compute its length by numerically integrating the boundary metric over the appropriate curve. However, in some cases the domain $D$ breaks some of the symmetries of $X$ (even though the handlebody solution does not), and in practice it is difficult to numerically solve for the associated geodesic.
+
+However, we can instead compute the boundary geodesic lengths by mapping the domain $D$ to a subset of the Poincar\'e disk. We do so using the numerical solution for $\phi$ to compute the length of each boundary segment $\partial D_i$. By symmetry each $\partial D_i$ is a geodesic that orthogonally intersects the adjacent segment $\partial D_j$. Knowing that the metric has been chosen so that $R_\text{bndy} =-2$, we can then construct a region in the Poincar\'e disk bounded by orthogonally-intersecting geodesic segments of the same lengths. The geometry of this region must then exactly match the geometry of $D$. Since the length of any geodesic segment in the Poincar\'e disk can be computed using a simple analytic formula, we can use this correspondence to easily compute geodesic length in our domain $D$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Thermofield Double-like States}%Linearity of $\log \Tr{(\mathcal T^n)}$
+\label{section:replica}
+
+We now use the above technology to study the CFT torus operator. Our initial analysis will suggest that it has a finite gap in the limit as $c \to \infty$. As described in \S\ref{section:intro}, if $\mathcal T$ is indeed gapped then using the gravitational action of the dual spacetime to compute $-\log \Tr(\mathcal T^n)$, as computed by the gravitational action of the dual spacetime should give a result that is exactly linear in for large $n$. Phases with this behavior we refer to as ``gapped'' phases, and phases that do not have this behavior we refer to as ``gapless" phases.
+
+Computing $\Tr(\mathcal T^n)$ corresponds to evaluating the path integral over a Riemann surface consisting of $n$ copies of $\mathcal T$ glued together along the seams. The result is a Riemann surface of genus $n+1$ with an $n-$fold ``replica symmetry'' acting by a $2\pi/n$ rotation as drawn in figure \ref{fig:genusN}.
+\begin{figure}[ht!]
+	\centering
+\includegraphics[width=0.55\textwidth]{TrOn.png}
+\put(-115,7){\makebox(0,0){$n$}}
+\caption{Partition function of genus $n+1$ that computes $\text{Tr}[\mathcal T^n]$ in the CFT. \label{fig:genusN}}
+\end{figure}
+
+To classify the dual gravitational phases, we consider the CFT state defined by cutting the partition function in half along a line dividing $n/2$ operators $\mathcal T$ for even $n$. That is we consider the state on two CFTs given by\footnote{We work with real path integrals, which describe matrix elements of operators in a basis that is real with respect to a time-reversal operator. This time-reversal can be thought of as mapping bra-vectors to ket-vectors and can be used to identify operators on a single CFT with states in the tensor product of two CFTs.} $\mathcal T^{n/2}$. This state is the analog of the thermofield double (TFD) state $e^{-\beta\, H/2}$ defined by the cylinder operator, and for simplicity we call it TFD-like below.
+
+\subsection{Replica Symmetric Phases}
+
+We first consider phases which explicitly preserve the replica symmetry.\footnote{That is, we study phases whose Schottky domains respect the replica symmetry. There are more complicated phases that preserve replica symmetry, even though the symmetry is broken by the Schottky representation.} To catalog such phases we can restrict our attention to the fundamental unit $\mathcal T$ drawn in figure \ref{fig:unit}.
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.55\textwidth]{unit.png}
+	\put(-115,-5){\makebox(0,0){$\alpha_i$}}
+	\put(-120,90){\makebox(0,0){$\beta_i$}}
+	\put(-120,173){\makebox(0,0){$\beta_0$}}
+	\put(-220,10){\makebox(0,0){$\alpha_0$}}
+	\caption{The fundamental unit $\mathcal T$ with cycles labeled. Only $1/n^{\text{th}}$ of $\beta_0$ is drawn. \label{fig:unit}}
+\end{figure}
+We consider four distinct phases of this partition function, divided into two classes. The first class are called AdS phases, given by the choice of $\{\alpha_0, \alpha_1, \cdots, \alpha_n\}$ or $\{\alpha_0, \beta_1, \cdots, \beta_n\}$ contractible. In both of these phases, if any of the $n$ choices of cycles $\alpha_0$ is contractible, then the image of $\alpha_0$ under $\frac{2\pi}n k$ rotation is also contractible. As a result, each $\alpha_0$ cycle (purple in figure \ref{fig:unit}) bounds a slice of the bulk with vanishing extrinsic curvature and the geometry of the Poincar\'e disk. This is the Lorentzian-signature initial data for global AdS$_3$, so the bulk geometry for $\mathcal T^{n/2}$ (with even $n$) is just a pair of global AdS$_3$ geometries. We refer to such saddles as AdS phases for $\mathcal T^n$. 
+
+When $\alpha_0$ is contractible we can use the trick described in \cite{MRW} to build phases for higher genus Riemann surfaces from lower genus phases. The boundary conditions on $\phi$ allow us to glue together Schottky domains along contractible geodesics, and we can glue together $n$ copies of the unit $\mathcal T$ along the contractible geodesics $\alpha_0$. In the bulk, this gluing occurs along the associated hemispheres (which have vanishing extrinsic curvature).
+In this way, when $\alpha_0$ is contractible the action is given by $n$ times the action for one of the units. The action for such AdS phases is exactly linear in $n$, and so these are gapped phases. If the operator $\mathcal T$ is gapped, we would expect one of these phases to dominate for large $n$.
+
+The Schottky domains used to represent the above AdS phases are shown in figure \ref{fig:AdSphases}.
+\begin{figure}[ht!]
+	\centering
+	\begin{subfigure}{0.47\textwidth}
+		\includegraphics[width=\textwidth]{conndomain}
+		\put(-38,5){\makebox(0,0){$\alpha_i$}}
+		\put(-100,114){\makebox(0,0){$\tilde \alpha_i$}}
+		\put(-102,15){\makebox(0,0){$\alpha_0$}}
+		\put(-160,-3){\makebox(0,0){$\beta_0$}}
+		\put(-15,-3){\makebox(0,0){$\beta_i$}}
+		\put(-65,-3){\makebox(0,0){$\tilde\beta_0$}}
+		\vspace{0.1cm}
+		\subcaption{AdS phase with $\{\alpha_0, \alpha_{i}\}$ contractible}
+		
+	\end{subfigure}
+	%\vspace{0.35cm}
+	\hfill
+	\begin{subfigure}{0.47\textwidth}
+		\includegraphics[width=\textwidth]{p2domain}
+		\put(-45,7){\makebox(0,0){$\beta_i$}}
+		\put(-103,95){\makebox(0,0){$\alpha_0$}}
+		\put(-23,80){\makebox(0,0){$\tilde \beta_0$}}
+		\put(-177,85){\makebox(0,0){$\beta_0$}}
+		\put(-125,-5){\makebox(0,0){$\tilde \alpha_i$}}
+		\put(-15,-5){\makebox(0,0){$\alpha_i$}}
+		\vspace{0.1cm}
+		\subcaption{AdS phase with $\{\alpha_0, \beta_i\}$ contractible}
+		
+	\end{subfigure}
+	\caption{One quarter of the Schottky domains used to construct the two AdS phases, reduced by the reflection symmetries in the x-axis and the inversion symmetry through the unit circle (dashed). Various boundary cycles are labeled in each phase.  }
+	\label{fig:AdSphases}
+\end{figure}
+In each of these domains we include the cycles $\tilde \beta_0$ and $\tilde \alpha_i$, which are the images of $\beta_0$ and $\alpha_i$ under reflection across the horizontal line of symmetry in figure \ref{fig:unit}. Each domain has four free parameters, which are reduced to two by imposing $|\tilde \beta_0| = |\beta_0|$ and $|\tilde \alpha_i| = |\alpha_i|$.
+
+
+The second class of phases we call BTZ phases, given by the choice of $\{\beta_0, \beta_1, \cdots, \beta_n\}$ or $\{\beta_0, \alpha_1, \cdots, \alpha_n\}$ contractible.\footnote{Note that there is another phase given by $\{\tilde \beta_0,\tilde \alpha_i\}$ contractible, but this phase will have exactly equal action by the symmetry.} In these phases the moment of time symmetry in the bulk looks like a BTZ wormhole, and the action does not have a simple dependence on $n$. The trick we used to paste together AdS phases does not work, as these phases cannot be constructed by pasting together lower genus units along contractible geodesics. We thus expect the BTZ phases to be gapless.
+
+Instead, we take advantage of the replica symmetry to further reduce the Schottky domain. The reduced domains for these phases are shown in figure \ref{fig:BTZphases}, with the replica symmetry acting by a $2\pi/n$ rotation about the origin.
+\begin{figure}[ht!]
+	\centering
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=\textwidth]{ddomain}
+		\put(-82,20){\makebox(0,0){$\beta_i$}}
+		\put(-190,25){\makebox(0,0){$\beta_0$}}
+		\put(-5,95){\makebox(0,0){$\tilde\beta_0$}}
+		\put(-35,2){\makebox(0,0){$\alpha_i$}}
+		\put(-150,100){\makebox(0,0){$\alpha_0$}}
+		\put(-135,2){\makebox(0,0){$\tilde\alpha_i$}}
+		\subcaption{BTZ phase with $\{\beta_0, \beta_{i}\}$ contractible}
+		
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=\textwidth]{p13domain}
+		\put(3,33){\makebox(0,0){$\beta_i$}}
+		\put(-195,20){\makebox(0,0){$\beta_0$}}
+		\put(-25,85){\makebox(0,0){$\alpha_i$}}
+		\put(-150,100){\makebox(0,0){$\alpha_0$}}
+		\put(-35,137){\makebox(0,0){$\tilde\beta_0$}}
+		\put(-85,0){\makebox(0,0){$\tilde\alpha_i$}}
+		\subcaption{BTZ phase with $\{\beta_0, \alpha_i\}$ contractible}
+		
+	\end{subfigure}
+	\caption{A slice of the Schottky domains used to construct the two BTZ phases, reduced by the reflection symmetry in the x-axis, $2\pi/n$ rotational symmetry about the origin, and the inversion symmetry through the unit circle (dashed). Various boundary cycles are labeled in each phase.  	\label{fig:BTZphases}}
+\end{figure}
+
+
+In practice, we find that it becomes difficult to numerically generate a mesh and solve the requisite differential equations for $\phi$ for $n>4$. Instead we notice that given a solution $\phi_n$ for the metric for a particular BTZ phase at replica number $n$, the solution $\phi_{n+1}$ can be approximated as $\phi_{n+1}(w) = \phi_{n}(w^{n/(n+1)})$. The function $\phi_{n+1}(w)$ is a solution with the correct boundary conditions up to corrections $\mathcal O(1/n)$.  Under this transformation the line $\theta= \pi/n$ is mapped to $\theta = \pi/(n+1)$, effectively turning the $n-$fold replica symmetry into $(n+1)-$fold replica symmetry. Extending this idea, we can exactly solve for $\phi_2(w)$ then approximate all higher solutions as $\phi_n(w) = \phi_2(w^{2/n})$. This approximation introduces some error into the computation of the action and moduli, and we can estimate this error by explicitly comparing it to the exact solution for $n=4$. We find that in the region of interest the error is between $0.1\%$ and $5\%$ with most errors around$1\%$.
+
+In comparing the phases, we first note that our heuristic predicts an AdS phase to dominate at finite $n$. As we increase $n$, the length of the cycle $\beta_0$ is proportional to $n$ by replica symmetry, while the lengths of $\alpha_0$, $\beta_i$, and $\alpha_i$ stay fixed. Therefore as we increase $n$, the sum of lengths $\{\alpha_0, \beta_1, \cdots, \beta_n\}$ will become smaller than $\{\beta_0, \beta_1, \cdots, \beta_n\}$, and the sum of lengths $\{\alpha_0, \alpha_1, \cdots, \alpha_n\}$ will become smaller than $\{\beta_0, \alpha_1, \cdots, \alpha_n\}$.  So at some finite $n$, our heuristic predicts an AdS phase to dominate. So for $n>n_\text{BTZ}$ we have 
+\ban{
+\mathcal T^{n/2} = \ket{\text{AdS}}\bra{\text{AdS}} \, , \label{eq:tAdS}
+}
+so that $\ket 0_K = \ket{\text{AdS}}$. The maximum replica number $n_\text{BTZ}$ at which a BTZ phase dominates is a function of the moduli.
+Figure \ref{fig:replicaresults} shows $n_\text{BTZ}$ at various points in the two dimensional moduli space, computed numerically using the technology described in the previous subsection.
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.75\textwidth]{TFDphases.pdf}
+	\put(0,5){\makebox(0,0){$|\beta_i|$}}
+	\put(-350,200){\makebox(0,0){${|\beta_0|}/{n}$}}
+	\put(15,115){\makebox(0,0){$n_\text{BTZ}=1$}}
+	\put(3,50){\makebox(0,0){$n_\text{BTZ}=2$}}
+	\put(-110,33){\makebox(0,0){$n_\text{BTZ}=3$}}
+	\caption{Numerical computation of $n_\text{BTZ}$ for different values of the moduli. Suggested phase boundaries are drawn by hand in dashed grey, each consisting of two linear segments. The kink corresponds to a transition in dominance betwen two distinct AdS phases.
+		 \label{fig:replicaresults}}
+\end{figure}
+Consistent with this plot, we expect there to be a corresponding region of moduli space for any $n_\text{BTZ}$, with the area of the region decreasing for large $n_\text{BTZ}$. In this way, taken by themselves the above results suggest that the torus operator is gapped for any choice of moduli.
+
+We can understand this behavior by comparing $\mathcal T$ to the cylinder operator. Taking the cylinder to have circumference $2\pi \ell$ and length $\beta$, the BTZ phase dominates when $\beta \, n < 2 \pi \ell$. In this case the region of moduli with a particular $n_\text{BTZ}$ is given by $2\pi \ell / (n_\text{BTZ}+1) < \beta < 2 \pi \ell / n_\text{BTZ}$. We can make $n_\text{BTZ}$ as large as we like by choosing the moduli appropriately, but the volume occupied decreases with increasing $n_\text{BTZ}$. The torus operator shows a similar behavior, consistent with the conclusion that it too is gapped.
+
+\subsection{Replica Symmetry Breaking Phases}
+
+We have thus far restricted our analysis to a particular class of phases which explicitly preserve replica symmetry. We now consider the possibility that replica symmetry is broken at large $n$, perhaps in some mild way. But since the above phases have a total cycle length that scales with $n$, our heuristic suggests that we focus on phases where the total cycle length grows at a similar rate or more slowly.  
+
+One possibility is that the $\mathbb Z_n$ replica symmetry is broken to $\mathbb Z_{n/k}$, i.e. the phase consists of repeating blocks formed from $\mathcal T^k$ units. As in the previous section, our heuristic suggests that gapped phases will dominate at large $n$. Given some set of $k$ cycles $\{\gamma_i\}$ contained in $\mathcal T^k$ which are made contractible in a replica symmetry breaking phase, at large $n$ the total length of $\{n/k \times \gamma_i,\beta_0\}$ will always be larger than that of $\{n/k \times \gamma_i, \alpha_0\}$, as the length of $\beta_i$ grows with $n$ while the length of $\alpha_0$ is constant. Therefore we still expect gapped phases to dominate above some $n$.\footnote{It is possible to break the replica symmetry to $\mathbb Z_{n/k}$ in such a way that choosing $\{\gamma_i\}$ and $\alpha_0$ to be contractible is inconsistent, and therefore we are open to gapless phases dominating at large $n$. We elaborate on this point in \S\ref{section:discuss}.}
+
+For simplicity let us assume the $\mathbb Z_n$ replica symmetry to be broken to $\mathbb Z_{n/2}$ by a bulk phase built from $n/2$ fundamental units, each corresponding to $\mathcal T^2$. We consider a phase in which the cycles $\{\alpha_0, \alpha_i - \alpha_{i+1}, \beta_{i}+\beta_{i+1}\}$ are contractible as drawn in figure \ref{fig:twounit}.
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.55\textwidth]{twounit.png}
+	\put(-115,68){\makebox(0,0){$\alpha_i-\alpha_{i+1}$}}
+	\put(-117,115){\makebox(0,0){$\beta_i+\beta_{i+1}$}}
+	\put(-225,10){\makebox(0,0){$\alpha_0$}}
+	\caption{The fundamental unit $\mathcal T^2$ with cycles that are contractible in the phase of interest labeled. \DM{Add a vertical dashed line indicated the ${\mathbb Z}_2$ symmetry under horizontal reflections.} \label{fig:twounit}}
+\end{figure}
+We have reason to suspect that there might be a region of moduli space where this phase might dominate over the AdS phases, as this problem is similar to that studied in \cite{MRW} for a genus two Riemann surface.
+In our language, they computed a path integral for $\corr{0|\mathcal T^2 |0}$ and found that, for appropriately chosen moduli, the state $\mathcal T \ket 0$ was described by a toroidal black hole. Our calculation differs only by the addition of the punctures on either side of figure \ref{fig:twounit}.
+
+Computing the action for this phase explicitly is beyond the scope of the present work, but we can sharpen the argument that there exists a region of moduli space where we expect it to dominate. Starting from the bulk manifold shown in figure \ref{fig:twounit}, we can glue two Poincar\'e hemispheres to the bulk surfaces that make up the part of $\partial M$ that we called $\Sigma$ in \S\ref{section:intro}. These surfaces intersect the conformal boundary $Y$ along the cycles $\alpha_0$. As can be seen from a Schottky representation, the surfaces along which we do the gluing have vanishing extrinsic curvature. Additionally, the bulk metric can be made continuous by choosing an appropriately sized hemisphere to glue on. The only issue arises in that the conformal metric on the Poincar\'e ball has constant positive curvature, and therefore the conformal frame on the boundary is discontinuous. However, we can do a conformal transformation so that $R_\text{bndy} = -2$ everywhere, and the resulting bulk manifold exactly matches the toroidal black hole phase from \cite{MRW}.As the difference in action between phases is invariant under conformal transformations, we can reverse this procedure to find a region of moduli space where the phase shown in figure \ref{fig:twounit} to dominate. That is, if after this gluing procedure and conformal transformation we are in a region of moduli space where \cite{MRW} computed the dominant phase for $\corr{0|\mathcal T^2 |0}$ to be given by $\{\alpha_1 -\alpha_2, \beta_1+\beta_2\}$ contractible, then the analogous phase in drawn in figure \ref{fig:twounit} will have smaller action than the two replica symmetric AdS phases, as the contribution to the action from the end caps is the same for the phases considered.
+
+In the context of the analog of the TFD-like state $\mathcal T^{n/2}$, for $n$ that are multiples of four, taking the moment of time symmetry to lie between two $\mathcal T^2$ blocks (i.e., passing through an $\alpha_0$ cycle on either the left or right side of fig \ref{fig:twounit}) either we find the above saddles to again give an AdS phase. However if we put the moment of time symmetry so that it cuts through a $\mathcal T^2$ block along the dashed line in figu \ref{fig:twounit}, the bulk $t=0$ surface looks like two disconnected AdS black holes with toroidal interiors, i.e. we have $\text{TFD} \sim \ket 1_\text{BH}\otimes \ket 1_\text{BH}$, where $\ket{n}_\text{BH}$ indicates a bulk black hole with $n$ handles behind the horizon. By the full replica symmetry of the partition function, both of these configurations must have the same gravitational action, and the TFD-like state $\mathcal T^{n/2}$ is thus a superposition of the two. For  $n$ congruent to $2$ mod $4$, we similarly findan equal superposition of $\ket 1_\text{BH} \otimes \ket{\text{AdS}}$ and $\ket{\text{AdS}}\otimes \ket 1_\text{BH} $. So if this phase dominates for large $n$ we have
+\ban{
+\mathcal T^{n/2}\sim \left \{ \begin{array}{ccc} \frac 12 \ket{\text{AdS}}\bra{\text{AdS}}+\frac 12 \ket 1 _\text{BH} \bra 1_\text{BH}& \hspace{0.5cm} & n \equiv 0 \text{ mod } 4 \\
+\\
+\frac 12 \ket{1}_\text{BH} \bra{\text{AdS}}+\frac 12 \ket{\text{AdS}} \bra 1_\text{BH} & \hspace{0.5cm}& n \equiv 2 \text{ mod } 4 
+\end{array}
+ \right. \, \label{eq:dens},
+}
+where the $\sim$ denotes leading behavior at large $c$.
+The gravitational action is still linear in this phase, and so we conclude that $\mathcal T$ is also gapped in this region of moduli space.
+
+We note an issue with the state \eqref{eq:dens} for $n\equiv 2$ mod $4$. Manifestly $\mathcal T^{n/2}$ is a positive operator, as it can be written as $\mathcal T^{n/2} = A^\dag A$ where $A$ the operator defined by the path integral over the geometry obtained by cutting $\mathcal T^{n/2}$ in half. However the form \eqref{eq:dens} for $\mathcal T^{n/2}$ for $n$ congruent to $2$ mod $4$ has a subspace where it acts as a swap operator, and therefore it seems to have negative eigenvalues.
+
+Regardless, the state \eqref{eq:dens} is interesting to interpret in the limit as $n \to \infty$. In this case we would expect
+\ban{
+\mathcal T^{n/2} = \frac 12 \left( \ket{\text{AdS}} +\ket 1_\text{BH}\right)\left( \bra{\text{AdS}} +\bra 1_\text{BH}\right) \label{eq:super}\, ,
+}
+or that the two boundary state is pure with each boundary in the state $\frac 1{\sqrt 2} \left( \ket{\text{AdS}} +\ket 1_\text{BH}\right)$. So in this limit, the state $\ket 0_K$ seems to be an equal superposition of empty AdS and the toroidal black hole. Note that this state is manifestly positive, and so a possible resolution of the issue with \eqref{eq:dens} is that there are phases we did not consider with equal action that also contribute to the path integral for $\Tr(\mathcal T^n)$, leading to a TFD-like state at finite $n$ described by \eqref{eq:super}. Although an additional tension in this case is that $\mathcal T^n \ket 0$ should be described by a superposition of geometries at a finite $n$, and we do not see such behavior in \S\ref{section:states}. Nevertheless, we are open to the possibility that in each case we have missed relevant phases, with the TFD-like state in the phase \eqref{eq:super} at each $n$.
+
+On the other hand, if we did not miss any phases in our analysis, it seems that the phase drawn in figure \ref{fig:twounit} could never dominate the path integral for $\Tr(\mathcal T^n)$, as doing so would violate the positivity of $\mathcal T^{n/2}$. In this case the state $\mathcal T^{n/2}$ would always be of the form \eqref{eq:tAdS} for large $n$, and $\mathcal T^{n/2}$ is gapped with $\ket 0_K = \ket{\text{AdS}}$. However, the explicit calculations in \cite{MRW} and in the next section raise some tension with this conclusion. In particular, the form \eqref{eq:tAdS} implies that $\ket{\text{AdS}}$ is an eigenstate of $\mathcal T$, and so we should always have $\mathcal T \ket{\text{AdS}} = \ket{\text{AdS}}$. These calculations suggest that it is possible to choose moduli so that $\mathcal T \ket{\text{AdS}} = \ket{0}_\text{BH}$, and so such a form for $\mathcal T^{n/2}$ for all moduli would be ruled out.
+
+We conjecture that some phase like the one shown in figure \ref{fig:twounit} dominates the path integral in this regime of moduli space, yet we leave the detailed resolution of the discussed tensions to future work. That is, we conjecture that there is a region of moduli space where the TFD-like state is in a phase that involves a superposition of states $\ket k_\text{BH}$ for $k$ up to some $n_\text{max}$, leading to the form of the ground state $\ket 0_K$ given by \eqref{eq:gs}.  It is thus interesting to try to generate states of high topology by acting with $\mathcal T$. However, doing so in this context is rather difficult, and instead we turn to a different method in \S\ref{section:states}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Single Boundary States}
+\label{section:states}
+
+In this section we consider the action of $\mathcal T$ on AdS states and toroidal black hole states. In the context of the previous section, we seek to understand if states of high topology can dominate the path integrals considered. Explicitly, we investigate whether $\mathcal T^k \ket 0$ can be dual to the gravitational state $\ket k_\text{BH}$, starting with the case $k=2$. We fail to find a region of moduli space where this is the case, leading to the conjecture that this always fails above $k_\text{max} = 1$. Indeed, there appear to be regions of moduli space where $k_\text{max} = 0$. However, we point out that some of the reasoning in this section generates some tension with the conclusions of \S\ref{section:replica}.
+
+First, to study the state $\mathcal T^2 \ket 0$, we consider the partition function defined by the path integral over the genus Riemann surface drawn in figure \ref{fig:nchain}.
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=0.8\textwidth]{twotorus.png}
+\put(-295,-1){\makebox(0,0){$\alpha_1$}}
+\put(-210,6){\makebox(0,0){$\alpha_2$}}
+\put(-135,6){\makebox(0,0){$\alpha_3$}}
+\put(-57,-3){\makebox(0,0){$\alpha_4$}}
+\put(-295,73){\makebox(0,0){$\beta_1$}}
+\put(-217,73){\makebox(0,0){$\beta_2$}}
+\put(-135,73){\makebox(0,0){$\beta_3$}}
+\put(-60,73){\makebox(0,0){$\beta_4$}}
+\put(-75,110){\makebox(0,0){$h_1$}}
+\put(-240,110){\makebox(0,0){$h_1$}}
+\put(-160,105){\makebox(0,0){$h_0$}}
+
+\caption{
+The genus four Riemann surface considered with $\alpha$ cycles in purple and $\beta$ cycles in blue. The dashed black cycles labeled $h_0,h_1$ have equal length since each $\mathcal T$ has a reflection symmetry, and there are three reflection symmetries in the $x$, $y$, and $z$ axes.  \label{fig:nchain}
+}
+\end{figure}
+Cutting this path integral along an initial time-slice given by the middle dashed black line $h_0$ defines the state $\mathcal T_1 \mathcal T_2 \ket 0$, i.e. two torus operators acting on the vacuum. For general Riemann surfaces of the form shown in figure \ref{fig:nchain}, the two torus operators do not have the same moduli. It is convenient to generalize the above problem in this way.
+
+
+In general, the topology of the initial time-slice of the corresponding bulk state can be genus $0,1$, or $2$, with many possible phases for each genus. Our goal will be to find a region of the subspace of moduli space consistent with the symmetries where a bulk state with a genus $2$ initial time slice is the dominant phase. We consider five different phases, determined by the algorithm described in \S\ref{section:handlebody}. Two of the phases are genus $0$, two are genus $1$, and one is genus $2$.
+
+The two genus $0$ phases are defined by choosing the sets of cycles $\{\alpha_1, \alpha_{12}, \alpha_{34}, \alpha_4\}$ or $\{\beta_1, \beta_2, \beta_3, \beta_4\}$ to be contractible.\footnote{For simplicity of notation we define $\alpha_{ij}\equiv \alpha_i - \alpha_j$ and $\beta_{ij\cdots k} \equiv \beta_i + \beta_j + \cdots + \beta_k$.} The corresponding Schottky domains are shown in figure \ref{fig:AdS}.
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}{0.49\textwidth}
+\includegraphics[width=\textwidth]{ads42}
+\put(-220,100){\makebox(0,0){$h_0$}}
+\put(-65,150){\makebox(0,0){$\alpha_{23}$}}
+\put(-76,33){\makebox(0,0){$\alpha_{34}$}}
+\put(-145,37){\makebox(0,0){$\alpha_4$}}
+\put(-180,17){\makebox(0,0){$\beta_{1234}$}}
+\put(-107,17){\makebox(0,0){$\beta_{4}$}}
+\put(-45,17){\makebox(0,0){$\beta_{3}$}}
+\subcaption{$\{\alpha_1, \alpha_{12} ,\alpha_{34}, \alpha_4\}$ contractible}
+
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
+\includegraphics[width=\textwidth]{ads42}
+\put(-220,100){\makebox(0,0){$h_0$}}
+\put(-65,150){\makebox(0,0){$\beta_{1234}$}}
+\put(-76,33){\makebox(0,0){$\beta_4$}}
+\put(-145,37){\makebox(0,0){$\beta_3$}}
+\put(-180,17){\makebox(0,0){$\alpha_{23}$}}
+\put(-107,17){\makebox(0,0){$\alpha_{34}$}}
+\put(-45,17){\makebox(0,0){$\alpha_{4}$}}
+\subcaption{$\{\beta_1, \beta_2, \beta_3, \beta_4\}$ contractible}
+
+\end{subfigure}
+\caption{One eighth of the Schottky domain used to construct the two genus 0 phases, reduced by the reflection symmetries in the x-axis and y-axis and the inversion symmetry through the unit circle (dashed). Various boundary cycles are labeled in each phase.}
+\label{fig:AdS}
+\end{figure}
+For each phase we can numerically compute the lengths of all the labeled boundary geodesics fixed by symmetry and choose parameters so as to match them to those of the genus 2 phase described below. Note that the genus of the time-slice associated with the $h_0$ cycle is zero by \eqref{eq:bulkgenus}.
+
+The two genus $1$ phases are defined by choosing the set of cycles $\{\alpha_{12}, \alpha_{34}, \alpha_{23}, \beta_{1234}\}$ or the set $\{\beta_1, \beta_4, \alpha_{23}, \beta_{1234}\}$ to be contractible. The Schottky domains are depicted in figure \ref{fig:TPhase}.
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}{0.49\textwidth}
+\includegraphics[width=\textwidth]{torus42}
+\put(-60,145){\makebox(0,0){$\alpha_4$}}
+\put(-217,175){\makebox(0,0){$\beta_4$}}
+\put(-165,120){\makebox(0,0){$\alpha_{34}$}}
+\put(-217,65){\makebox(0,0){$\beta_3$}}
+\put(-175,30){\makebox(0,0){$\alpha_{23}$}}
+\put(-107,17){\makebox(0,0){$h_0$}}
+\put(-57,32){\makebox(0,0){$\beta_{1234}$}}
+\subcaption{$\{\alpha_{12}, \alpha_{34}, \alpha_{23}, \beta_{1234}\}$ contractible}
+
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
+\includegraphics[width=\textwidth]{torus42}
+\put(-60,145){\makebox(0,0){$\beta_3$}}
+\put(-220,175){\makebox(0,0){$\alpha_{34}$}}
+\put(-168,120){\makebox(0,0){$\beta_4$}}
+\put(-217,65){\makebox(0,0){$\alpha_4$}}
+\put(-168,30){\makebox(0,0){$\beta_{1234}$}}
+\put(-107,17){\makebox(0,0){$h_0$}}
+\put(-52,32){\makebox(0,0){$\alpha_{23}$}}
+\subcaption{$\{\beta_1, \beta_4, \alpha_{23}, \beta_{1234}\}$ contractible}
+
+\end{subfigure}
+\caption{One eighth of the Schottky domain used to construct the two genus 1 phases, reduced by the reflection symmetries in the x-axis and y-axis and the inversion symmetry through the unit circle (dashed). Various boundary cycles are labeled in each phase.}
+\label{fig:TPhase}
+\end{figure}
+Again, for each phase we can numerically compute the lengths of all the labeled boundary geodesics fixed by symmetry, and choose parameters so as to match them to those of the genus 2 phase. Additionally, the genus of the time-slice associated with the $h_0$ cycle is $1$ by \eqref{eq:bulkgenus}.
+
+Finally, we choose the genus 2 phase to have contractible cycles $\{\alpha_{14},\alpha_{23}, \beta_{23}, \beta_{1234}\}$. However, for computational reasons it is more convenient to use the basis $\{\alpha_{23}, \beta_{1234}, \alpha_{14}+\beta_{1234}, \alpha_{23}+\beta_{23}\}$, which gives the same bulk phase.
+
+Constructing the Schottky domain for this phase is difficult because the symmetries of the bulk manifold act non-trivially in the projected plane. We use the following procedure to keep track of all the boundary geodesics and symmetries. First, we cut the boundary Riemann surface along $h_0$, keeping only the right hand side, and then cut along $\beta_3$ and $\beta_4$. The result is the surface drawn in figure \ref{fig:cutA}.
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}{0.85\textwidth}
+\includegraphics[width=\textwidth]{2slicing}
+\put(-345,130){\makebox(0,0){$\alpha_{23}$}}
+\put(-30,130){\makebox(0,0){$\alpha_{23}$}}
+\put(-280,180){\makebox(0,0){$\alpha_{23}+\beta_{23}$}}
+\put(-100,60){\makebox(0,0){$\alpha_{23}+\beta_{23}$}}
+\put(-60,145){\makebox(0,0){$\beta_3$}}
+\put(-315,97){\makebox(0,0){$\beta_3$}}
+\put(-270,65){\makebox(0,0){$\alpha_{14}+\beta_{1234}$}}
+\put(-105,175){\makebox(0,0){$\alpha_{14}+\beta_{1234}$}}
+\put(-205,180){\makebox(0,0){$\beta_{1234}$}}
+\put(-125,23){\makebox(0,0){$h_0$}}
+\put(-132,97){\makebox(0,0){$\beta_4$}}
+\put(-245,145){\makebox(0,0){$\beta_4$}}
+\subcaption{One half of the flattened Riemann surface. The surface has been cut along the cycles $\beta_3$ and $\beta_4$ along the fixed point set of reflection across the vertical purple dashed line. \label{fig:cutA}}
+
+\end{subfigure}
+\hfill\\
+\vspace{0.25cm}
+\begin{subfigure}{0.85\textwidth}
+\includegraphics[width=\textwidth]{genus2domain.png}
+\put(-90,145){\makebox(0,0){$\beta_4$}}
+\put(-10,17){\makebox(0,0){$\alpha_{14}+\beta_{1234}$}}
+\put(-390,17){\makebox(0,0){$\alpha_{14}+\beta_{1234}$}}
+\put(-220,27){\makebox(0,0){$\alpha_{23}+\beta_{23}$}}
+\put(-90,25){\makebox(0,0){$\alpha_{23}$}}
+\put(-140,39){\makebox(0,0){$\beta_{3}$}}
+\put(-285,33){\makebox(0,0){$\beta_{1234}$}}
+\put(-335,-3){\makebox(0,0){$b_1$}}
+\put(-245,-3){\makebox(0,0){$b_2$}}
+\put(-140,-3){\makebox(0,0){$b_3$}}
+\put(-70,-3){\makebox(0,0){$b_4$}}
+\vspace{0.15cm}
+
+\subcaption{One fourth of the genus 2 Schottky domain, reduced by two symmetries. The two symmetries of the plane are reflection about the $x-$axis (labeled $h_0$) and the product of the reflection about the $y-$axis (dashed black) and inversion through the unit circle (labeled $\beta_4$). The boundary cycle $h_0$ is broken into four segments $b_i$. \label{fig:Schottky2}}
+
+\end{subfigure}
+\caption{}
+\label{fig:TPhase}
+\end{figure}
+
+Next, following the procedure described in \S\ref{section:handlebody} we cut along the contractible cycles $\{\alpha_{23}, \beta_{1234}, \alpha_{14}+\beta_{1234}, \alpha_{23}+\beta_{23}\}$. Note that while this choice of cycles respects the three $\mathbb Z_2$ symmetries of the boundary Riemann surface, when we choose representative cycles for $\alpha_{14}+\beta_{1234}$ and $\alpha_{23}+\beta_{23}$ we must\footnote{One could hope that there exists a basis where we can preserve all of the symmetries, but we find this not to be the case.} break two $\mathbb Z_2$ symmetries given by reflection in the $x-$axis and $y-$axis in figure \ref{fig:cutA}. However, the product of these symmetries is preserved, and the cycles $\alpha_{14}+\beta_{1234}$ and $\alpha_{23}+\beta_{23}$ are fixed point sets of this product. When we glue everything back together along the cycles $\beta_3$ and $\beta_4$ to construct the Schottky domain, we thus maintain the requirement that the contractible cycles are fixed point sets of a symmetry. In the Schottky domain of figure \ref{fig:Schottky2} this symmetry is the product of the reflection about the $y-$axis and inversion through the unit circle.
+
+Finally, we can use this Schottky domain to solve for the metric $\phi$ as described in \S\ref{section:handlebody}. In order to compute the lengths of geodesics on the boundary, it is more convenient to map this domain to a subset of the Poincar\'e disk where the lengths of the boundary segments are determined by the numerical solution for $\phi$. In the Poincar\'e disk it is possible to compute the lengths of the geodesic representative of any other cycle analytically using well known formulas for the geodesics.
+
+For the two genus $0$ phases and the two genus $1$ phases, the Schottky domain is defined by four free parameters, and imposing the condition $|h_0| = |h_1|$ reduces the space to a three dimensional moduli space. For the genus $2$ phase our Schottky representation breaks two of the symmetries so a priori we have an $8$ dimensional parameter space.
+Carefully tracking the symmetries gives the condition $b_2-b_1=b_4-b_3$ and that the two blue arcs in figure \ref{fig:Schottky2} have equal length.
+In the Poincar\'e disk we can also compute the lengths of the images of the cycles $\alpha_{23}+\beta_{23}$ and $\alpha_{14}+\beta_{1234}$ under reflection across the $x-$axis of figure \ref{fig:cutA}. The requirement that the lengths of these cycles be equal to the lengths of their inverse images gives two more conditions. Imposing these symmetry conditions numerically then reduces the parameter space to four dimensions, and further requiring $|h_0|=|h_1|$ recovers the desired three dimensional moduli space.
+
+We would like to find a region of moduli space where the genus $2$ phase dominates. Following the heuristic described in \S\ref{section:handlebody}, in order for this phase to dominate no cycle that does not cross the symmetry axis coincident with $h_0$ can be too small. This observation motivates us to restrict our search to a two dimensional subspace where the two genus $1$ phases have equal action. Away from this subspace we expect one set of cycles to grow larger, while a dual set of cycles will grow smaller. To maximize the lengths of all of these cycles we should stay in this subspace.
+
+In figure \ref{fig:t1t2} we plot $I_2 - I_\text{dom.}$, the difference in action between the genus 2 phase and the dominant phase.
+\begin{figure}[ht!]
+	\centering
+\includegraphics[width=0.55\textwidth]{t1t2.png}
+\put(-260,100){\makebox(0,0){$|\beta_3|$}}
+\put(-135,-8){\makebox(0,0){$|h_0|$}}
+\put(30,100){\makebox(0,0){$\frac {I_2 - I_\text{dom.}}c$}}
+\caption{Contour plot of $I_2 - I_\text{dom.}$. The genus $2$ phase never dominates in this subspace. \label{fig:t1t2}}
+\end{figure}
+The genus 2 phase never dominates in the region plotted, and the difference in actions seems to reach a minimum just below $c$. For large $|\beta_3|$, small $|\beta_3|$, and small $|h_0|$ the genus 2 phase becomes more sub-dominant, while for $|h_0|\gtrsim 11$ the difference in action reaches a plateau. Extending $|h_0|$ to larger values becomes difficult numerically, as we near the edge of moduli space at large $|h_0|$.
+
+Further, we can use our heuristic to gain an intuitive understanding of the results in figure \ref{fig:t1t2} (which will also serve as a check of our heuristic). In order for the genus $2$ phase to dominate, the length of any cycle which does not cross the surface of time-symmetry on the boundary can not become too small, otherwise a phase in which that cycle pinches off will be more dominant. We refer to these types of cycles as internal cycles. Based on our heuristic, the genus two phase should dominate in a region of moduli space where all such internal cycles are large. In figure \ref{fig:moduli}, we show how the lengths of these cycles change as we sweep through moduli space.
+ \begin{figure}[ht!]
+ 	\centering
+ 	\includegraphics[width=0.55\textwidth]{moduli.png}
+ 	\put(-260,100){\makebox(0,0){$|\beta_3|$}}
+ 	\put(-135,-8){\makebox(0,0){$|h_0|$}}
+ 	\put(35,100){\makebox(0,0){min$\left(\frac {|\gamma|}{|\gamma|_\text{avg.}}\right)$}}
+ 	\caption{Change in lengths of internal cycles normalized by the average length in the window shown.  \label{fig:moduli}}
+ \end{figure}
+The values plotted in the figure is the largest percent decrease of an internal cycle compared to the average value in the range shown. That is, if all internal cycles were increasing, this value would be bigger than $1$. Therefore to find a region where the genus two phase dominates, we should follow the direction where the length of the internal cycles are decreasing the slowest (or increasing), which in the figure corresponds to larger values. Consistent with figure \ref{fig:t1t2}, the direction suggested by this reasoning is that of increasing $|h_0|$, and the overall structure of figure \ref{fig:moduli} matches that of figure \ref{fig:t1t2}. However, note that the features do not match up exactly, as our heuristic is not exact in this scenario.
+
+The above numerical evidence suggests that $\mathcal T^2 \ket 0$ can be dual to $\ket{\text{AdS}}$ or $\ket 1_\text{BH}$ and no other states. Based on this evidence we also conjecture that we will find similar results for $k>2$, and so $k_\text{max}$ can be only $0$ or $1$.
+
+
+These results add to the tensions discussed at the end of \S\ref{section:replica} . We find that in some regions of moduli space, $\mathcal T \ket{\text{AdS}}= \ket 1_\text{BH}$, in conflict with the  form  \eqref{eq:tAdS} for the TFD-like state. Additionally, one might have tried to resolve these tensions by considering phases of high topology, but based on our calculations we expect phases of genus larger than one to be sub-dominant in the relevant path integrals. We now turn to possible ways forward in \S\ref{section:discuss}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Discussion}
+\label{section:discuss}
+
+\DM{Another logical alternative is that long strings really matter.  We should mention this briefly (one line).}
+
+The results presented in \S\ref{section:replica} and \S\ref{section:states} set up a puzzle with no clear resolution. In \S\ref{section:replica} we presented arguments that if a replica symmetry preserving phase dominates the path integral computing $\Tr(\mathcal T^n)$ for all moduli, then for large $n$ we would have
+\ban{
+\mathcal T^{n/2} \sim \ket{\text{AdS}}\bra{\text{AdS}}	
+}
+and therefore $\ket 0_K = \ket{\text{AdS}}$. However it is puzzling then that the calculations in  $\S\ref{section:states}$ and \cite{MRW} showed that applying $\mathcal T$ to AdS states could produce states described by toroidal black holes. This reasoning suggests that in some region of moduli space, replica symmetry breaking phases must dominate the path integral.
+
+However, if the $\mathbb Z_n$ replica symmetry is broken, then acting with appropriate elements of $\mathbb Z_n$ would produce distinct saddles with equal action (by the full replica symmetry). If for any $n$ the TFD-like state $\mathcal T^{n/2}$ takes the form
+\ban{
+\mathcal T^{n/2} \sim \ket \phi \bra \psi + \ket \psi \bra \phi \, ,
+}
+then $\mathcal T^{n/2}$ would have a negative eigenvalue and another phase must be dominant for this $n$. Any gapped phase that breaks the $\mathbb Z_n$ replica symmetry to $\mathbb Z_{n/k}$ by repeating some pattern on $k$ copies of $\mathcal T$ glued together will result in such a situation. One possible resolution is that there additional phases (possibly related by some hidden symmetries) with equal action, and so instead the TFD-like state is described by
+\ban{
+\mathcal T^{n/2} \sim \left( \ket \phi + \ket \psi \right) \left( \bra \phi + \bra \psi\right)\, .
+}
+In this case we would also expect that $\mathcal T^n \ket 0$ is described by a superposition of geometries.
+
+Another possible resolution is to break replica symmetry in a more violent way. For example, the dominant phase at each $n$ could be one that avoids having any repeating blocks, but then one might expect to have states of high topology dominating as $n$ is large, running into issues with the black hole entropy formula. Additionally, the explicit calculations in \S\ref{section:states} suggest that these states of high topology are sub-dominant in the path integral, although it is possible a genus two phase we did not consider dominates (although the only other phase we found breaks the time-reversal symmetry by introducing a twist through the bulk).
+
+A different resolution would be that a gapless phase dominates at large $n$. Consider the phase shown in figure \ref{fig:6block}, defined for even $n\geq 4$.
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.55\textwidth]{geon6}
+	\caption{A BTZ-like phase where $\mathcal T^{n/2}$ is not pure. The purple lines joining two holes $i,j$ indicate the pair of cycles $\alpha_i -\alpha_j$ and $\beta_i+\beta_j$ are contractible. \label{fig:6block}}
+\end{figure}
+In this phase the contractible cycles are $\alpha_i - \alpha_{i+3}$ and $\beta_i + \beta_{i+3}$ for odd $i$, the cycles $\alpha_i -\alpha_{i-3}$ and $\beta_i + \beta_{i-3}$ for even $i$, and the cycle $\beta_0$. Note that no $\alpha_0$ is contractible and so the state is in a BTZ-like phase. If this phase dominates, then $\mathcal T^{n/2}$ can be in an ensemble of BTZ-like states with wormholes of genus $g>0$. However, as the total length of the contractible cycles is exactly linear in $n$, by our heuristic this phase would not dominate as $n$ is large. This choice of cycles preserves the symmetry exchanging the two boundary slices, and therefore the resulting wormholes also preserve this symmetry. Analogous to the cylinder operator, increasing the length of $\beta_0$ decreases the length of the minimal surface fixed by the exchange symmetry. As $n\to \infty$, this minimal surface pinches off, leaving the following states:
+\ban{
+\mathcal T^{n/2} = \left\{ \begin{array}{ccc}
+ \ket 1_\text{BH} \bra 1_\text{BH}&\hspace{1cm} & n \equiv 0 \text{ mod } 6\\ 
+ \\
+\frac 12  \ket 1_\text{BH} \bra 1_\text{BH} + \frac 12  \ket 2_\text{BH} \bra 2_\text{BH} & \hspace{1cm}& n \equiv 2 \text{ mod } 6 \\ 
+ \\
+ \ket 1_\text{BH} \bra 1_\text{BH}  &\hspace{1cm} &  n \equiv 4 \text{ mod } 6
+  \end{array}\right.
+}
+\JW{What does this imply for the $n\to \infty$ limit? Do we have a superposition $\sqrt{\frac 56} \ket 1_\text{BH} + \frac 1{\sqrt 6} \ket 2 _\text{BH}$?}
+
+However by our heuristic, in order for this phase to dominate we must have 
+\ban{
+|\alpha_i - \alpha_{i+3}| + |\beta_i + \beta_{i+3}| < |\alpha_i - \alpha_{i+1}| + |\beta_i + \beta_{i+1}|\, . \label{eq:gapless}
+}
+Otherwise, our heuristic suggests that the gapped replica symmetry breaking phase drawn in figure \ref{fig:twounit} would dominate over this phase at large enough $n$. While we have not shown this is not possible, we think it is unlikely to be able to choose the moduli of $\mathcal T$ in order for \eqref{eq:gapless} to be satisfied.
+
+
+ Therefore we are left with the following puzzle. The types of phases we expect to dominate the path integral for $\Tr(\mathcal T^n)$ at large $n$, i.e. gapped replica symmetry breaking phases, contradict the positivity of $\mathcal T$. However, the types of phases which would not lead to this contradiction, like the phase shown in figure \ref{fig:6block}, are expected to be sub-dominant by our heuristic. Alternatively, there would be no contradiction with positivity if phases where the TFD-like state is in a superposition of the form \eqref{eq:super}, although in this case we would have expected that $\mathcal T^2\ket 0$ would have yielded states that are superpositions of geometries, which we do not see from the calculations in \S\ref{section:states}.
+
+ To resolve these tensions, we need to better characterize all possible phases of a given path integral and compute their actions. One might find two phases exactly related by a symmetry, thus generating superpositions of the form \eqref{eq:super}. In this manner, it would be useful to refine the technology available to determine all possible bulk phases given a boundary Riemann surface $X$. Additionally, to study these phases we likely need to be able to solve for $\phi$ when the contractible cycles are not fixed by a symmetry of the boundary, in which case the simplification \eqref{eq:bcred} would not hold.
+
+ Finally, it will be useful to gain better control over the process of gluing the state $\ket 0$ to the operator $\mathcal T$ and changing conformal frames as described in \S\ref{section:replica}, in order to be able to more cleanly compute the state $\mathcal T^n \ket 0$ and compare it to the phase of the operator $\mathcal T^{n/2}$. That is, when $\mathcal T^{n/2}$ is in one of the AdS phases, we would expect that $\mathcal T^n\ket 0 = \ket{\text{AdS}}$ for all $n$. It will be useful to verify this explicitly.
+
+ It is possible that adding matter to the path integral will resolve these issues, but it is surprising there is an issue with the purely gravitational sector. We leave the final resolution of this puzzle to future work.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Acknowledgments}
+It is a pleasure to thank Henry Maxfield for useful conversations. DM was supported in part by the Simons Foundation and by funds from the University of California. JW was supported by \JW{funding}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+
+%\section{Classification of Bulk Phases}
+%\label{appendix:cycles}
+
+%Show algorithm of enumerating bulk phases in the two torus example.
+
+%\section{Symmetry Reduction of Bulk Action}
+%\label{appendix:reductions}
+
+%Go through all of the reductions in detail (don't reference the other works, convenient to have it all in one place).
+
+\section{Estimation of Numerical Error}
+\label{appendix:error}
+
+In this appendix we discuss some sources of numerical error. First there is the discretization error from using finite element methods to solve for $\phi$. We can estimate this error as in \cite{MRW} by computing the area of the Riemann surface and comparing it to the Gauss Bonnet theorem. That is, we have
+\ban{
+A(g) = 4 \pi (g-1) 	
+}
+in AdS units. We define $\epsilon_A = |1-A/A(g)|$ as an estimate for this error. For domains where the geodesic lengths are computed in the Schottky representation (and not the Poincar\'e disk), we report this value as the overall error.
+
+Further, we perform numeric integration over the boundary circles by adding up the function values on the mesh nodes coinciding with a particular circle. In order to do so, we must set a tolerance for considering a point on the boundary circle, which introduces some numerical error. We can estimate this error by computing the length of a boundary segment using a flat metric and compare it to the analytic formula for the length of the arc of the corresponding circle. The tolerance is chosen to minimize the percent error of each boundary circle. We denote the maximum of all of these errors $\epsilon_C$.
+
+Additionally, we estimate the propagation of these uncertainties in computing the geodesic lengths in the  Poincar\'e disk. To estimate this error, we construct the corresponding domain in the Poincar\'e disk for boundary segment lengths $\ell_0 (1 + \text{max}(\epsilon_A,\epsilon_A))$, where $\ell_0$ is the segment length as computed by the numerical solution $\phi$. The maximum change in geodesic lengths by using different lengths of boundary segments estimates this error $\epsilon_G$. When $\epsilon_G> 0.05$ we find the moduli matching algorithms tend not to converge, and so we take this as a cutoff of numerical error. The overall error is taken to be $\epsilon = \text{max}(\epsilon_A, \epsilon_C, \epsilon_G)$ which is $\epsilon_G$. We find $\epsilon_G$ tends to be 1-2 orders of magnitude larger than $\epsilon_A$ or $\epsilon_C$, and for future work this suggests a way to reduce errors even further. 	
+
+Finally, in matching moduli between phases, we only require they match up to a certain threshold. That is we require the percentage difference between two matching moduli to be less than $\text{max}(\epsilon_G, 3 \times 10^{-3})$.
+
+The error $\epsilon_A$ can be reduced simply by using more lattice points to discretize the domain. To reduce $\epsilon_C$ we must include more boundary points as well as choose the tolerance accordingly. In figure \ref{fig:numerics} we display $\epsilon_A$ for a representative genus 2 phase from \S\ref{section:states} as a function of the number of points.
+
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.55\textwidth]{numerics}
+	\put(-275,70){\makebox(0,0){$\log \epsilon_A$}}
+	\put(-100,155){\makebox(0,0){$n_\text{points}$}}
+	\caption{Estimation of $\epsilon_A$ as a function of number of lattice points $n_\text{points}$.
+		 \label{fig:numerics}}
+\end{figure}
+
+\bibliographystyle{jhep}
+	%\cleardoublepage
+\phantomsection
+\renewcommand*{\bibname}{References}
+
+\bibliography{references}
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
